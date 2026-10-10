@@ -1,0 +1,52 @@
+name: Publish Alpine image for browser VM
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-alpine.yml'
+  schedule:
+    - cron: '14 5 1 * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: alpine-browser-image
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch Alpine x86 ISO and verify checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=3.24.2
+          ISO="alpine-virt-${VERSION}-x86.iso"
+          BASE="https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86"
+          mkdir -p /tmp/box-alpine
+          cd /tmp/box-alpine
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 20 -o "$ISO" "$BASE/$ISO"
+          curl -fL --retry 4 --retry-all-errors --connect-timeout 20 -o "$ISO.sha256" "$BASE/$ISO.sha256"
+          sha256sum -c "$ISO.sha256"
+          test "$(stat -c %s "$ISO")" -gt 40000000
+
+      - name: Publish on separate linux-assets branch (not Pages branch)
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd /tmp/box-alpine
+          git init -q
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -qb linux-assets
+          printf 'Auto-generated Alpine Linux installer, verified against Alpine upstream SHA256.\n' > README.txt
+          git add .
+          git commit -qm 'Refresh verified Alpine 3.24.2 x86 installer'
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin HEAD:refs/heads/linux-assets
