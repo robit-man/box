@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark">
 <title>Linux Workstation / Browser</title>
 <style>
-:root{color-scheme:dark;font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:#0a0c10;color:#dce4ed}*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:flex;flex-direction:column}button,input,select,textarea{font:inherit;color:inherit}button,.file-btn,select{background:#1b222b;border:1px solid #394350;padding:8px 10px;border-radius:5px;cursor:pointer}button:hover,.file-btn:hover,select:hover{background:#293544}button:disabled{opacity:.42;cursor:default}button.primary{background:#264c39;border-color:#397b55;color:#d7f8e4}.file-btn input{display:none}input[type=text],input[type=number],textarea{background:#0e131a;border:1px solid #394350;border-radius:5px;padding:8px;min-width:0}header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#12161c;border-bottom:1px solid #283341;padding:12px 16px}.brand{font-weight:800;letter-spacing:.06em;font-size:14px}.tag{font-size:10px;border:1px solid #3a485b;padding:3px 7px;color:#90a6bb;border-radius:5px}.actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto}.layout{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:13px;padding:13px}.main-col{display:flex;flex-direction:column;min-width:0;gap:9px}.statusbar{display:flex;justify-content:space-between;gap:8px;color:#9babbd;font-size:11px}.lamp{display:inline-block;width:7px;height:7px;border-radius:100%;background:#ddb267;margin-right:7px}.lamp.ok{background:#71daa1}.lamp.bad{background:#f27d7d}.vm-frame{background:#000;border:1px solid #334251;border-radius:7px;min-height:400px;flex:1;display:flex;flex-direction:column;overflow:hidden}.panel-head{background:#151b22;display:flex;gap:6px;justify-content:space-between;align-items:center;border-bottom:1px solid #29323c;padding:7px 10px}.tab{background:none;border:0;color:#91a1b3}.tab.selected{color:#e6eef9;box-shadow:inset 0 -2px #75ca93}.hint{color:#74899e;font-size:11px}#display{flex:1;min-height:300px;overflow:auto;display:flex;align-items:center;justify-content:center;padding:12px}#screen_container{display:inline-block;flex:none;outline:none}#screen_container>div{white-space:pre;font:14px/14px monospace}#screen_container>canvas{display:none;image-rendering:pixelated}#serial-panel{display:none;flex:1;min-height:0;flex-direction:column;background:#080d09}#serial-log{flex:1;white-space:pre-wrap;overflow:auto;min-height:200px;max-height:calc(100dvh - 220px);padding:13px;margin:0;color:#a7d8af;font:12px/1.45 monospace}#serial-entry{background:#0b120e;border:0;border-top:1px solid #253428;padding:12px;outline:none}#commandbar{display:flex;gap:7px;padding:9px;background:#11161c;border-top:1px solid #28323c}#command{flex:1;width:1px}aside{display:flex;flex-direction:column;gap:10px;min-width:0}.card{background:#12171e;border:1px solid #2b3540;padding:13px;border-radius:7px}.card h2{font-size:12px;margin:0 0 9px;color:#f2f5f9;letter-spacing:.015em}.stack{display:flex;flex-direction:column;gap:8px}.row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.row>label{color:#8fa3b8;font-size:11px}.field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:90px}.field label{font-size:10px;color:#98aac0}.field select,.field input{width:100%}.help{color:#90a2b7;font-size:11px;line-height:1.55;margin:8px 0 0}.notice{color:#c6b58f}.good{color:#9adcb6}.bad{color:#ff9a9a}.steps{margin:7px 0;padding-left:19px;color:#adbdcf;font-size:11px}.steps li{margin-bottom:6px}code{font:inherit;color:#d4eddb;overflow-wrap:anywhere}.snippet{display:flex;align-items:flex-start;gap:4px;background:#0b1016;border:1px solid #2d3c48;border-radius:5px;padding:7px;margin-top:6px}.snippet code{flex:1;font-size:10.5px;white-space:pre-wrap;overflow-wrap:anywhere}.snippet button{font-size:10px;padding:4px 7px}.helper{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}.helper button{font-size:10px;padding:5px 7px}.foot{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0 14px 12px;color:#7f92a7;font-size:10px}.foot a{color:#a5b9d1}details{border-top:1px solid #303844;padding-top:8px}summary{cursor:pointer;font-size:11px;color:#d4dde8}#disk-info{font-size:11px;color:#9bb8a6;overflow-wrap:anywhere}#transfer{color:#8ca5bb}#workspace-info{font-size:11px;color:#a1b4c7}@media(max-width:1050px){.layout{grid-template-columns:minmax(0,1fr)}aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start}}@media(max-width:640px){header{padding:10px}.layout{padding:8px;display:flex;flex-direction:column}aside{display:flex}.hint{display:none}.vm-frame{min-height:430px}.brand{width:100%}.actions{margin-left:0}.field{min-width:100%}}
+:root{color-scheme:dark;font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:#0a0c10;color:#dce4ed}*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:flex;flex-direction:column}button,input,select,textarea{font:inherit;color:inherit}button,.file-btn,select{background:#1b222b;border:1px solid #394350;padding:8px 10px;border-radius:5px;cursor:pointer}button:hover,.file-btn:hover,select:hover{background:#293544}button:disabled{opacity:.42;cursor:default}button.primary{background:#264c39;border-color:#397b55;color:#d7f8e4}.file-btn input{display:none}input[type=text],input[type=number],textarea{background:#0e131a;border:1px solid #394350;border-radius:5px;padding:8px;min-width:0}header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:#12161c;border-bottom:1px solid #283341;padding:12px 16px}.brand{font-weight:800;letter-spacing:.06em;font-size:14px}.tag{font-size:10px;border:1px solid #3a485b;padding:3px 7px;color:#90a6bb;border-radius:5px}.actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto}.layout{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:13px;padding:13px}.main-col{display:flex;flex-direction:column;min-width:0;gap:9px}.statusbar{display:flex;justify-content:space-between;gap:8px;color:#9babbd;font-size:11px}.lamp{display:inline-block;width:7px;height:7px;border-radius:100%;background:#ddb267;margin-right:7px}.lamp.ok{background:#71daa1}.lamp.bad{background:#f27d7d}.vm-frame{background:#000;border:1px solid #334251;border-radius:7px;min-height:400px;flex:1;display:flex;flex-direction:column;overflow:hidden}.panel-head{background:#151b22;display:flex;gap:6px;justify-content:space-between;align-items:center;border-bottom:1px solid #29323c;padding:7px 10px}.tab{background:none;border:0;color:#91a1b3}.tab.selected{color:#e6eef9;box-shadow:inset 0 -2px #75ca93}.hint{color:#74899e;font-size:11px}#display{flex:1;min-height:300px;overflow:auto;display:flex;align-items:center;justify-content:center;padding:12px}#screen_container{display:inline-block;flex:none;outline:none}#screen_container>div{white-space:pre;font:14px/14px monospace}#screen_container>canvas{display:none;image-rendering:pixelated}#serial-panel{display:none;flex:1;min-height:0;flex-direction:column;background:#080d09}#serial-log{flex:1;white-space:pre-wrap;overflow:auto;min-height:200px;max-height:calc(100dvh - 220px);padding:13px;margin:0;color:#a7d8af;font:12px/1.45 monospace}#serial-entry{background:#0b120e;border:0;border-top:1px solid #253428;padding:12px;outline:none}#commandbar{display:flex;gap:7px;padding:9px;background:#11161c;border-top:1px solid #28323c}#command{flex:1;width:1px}aside{display:flex;flex-direction:column;gap:10px;min-width:0}.card{background:#12171e;border:1px solid #2b3540;padding:13px;border-radius:7px}.card h2{font-size:12px;margin:0 0 9px;color:#f2f5f9;letter-spacing:.015em}.stack{display:flex;flex-direction:column;gap:8px}.row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.row>label{color:#8fa3b8;font-size:11px}.field{display:flex;flex-direction:column;gap:3px;flex:1;min-width:90px}.field label{font-size:10px;color:#98aac0}.field select,.field input{width:100%}.help{color:#90a2b7;font-size:11px;line-height:1.55;margin:8px 0 0}.notice{color:#c6b58f}.good{color:#9adcb6}.bad{color:#ff9a9a}.steps{margin:7px 0;padding-left:19px;color:#adbdcf;font-size:11px}.steps li{margin-bottom:6px}code{font:inherit;color:#d4eddb;overflow-wrap:anywhere}.snippet{display:flex;align-items:flex-start;gap:4px;background:#0b1016;border:1px solid #2d3c48;border-radius:5px;padding:7px;margin-top:6px}.snippet code{flex:1;font-size:10.5px;white-space:pre-wrap;overflow-wrap:anywhere}.snippet button{font-size:10px;padding:4px 7px}.helper{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0}.helper button{font-size:10px;padding:5px 7px}.foot{display:flex;flex-wrap:wrap;gap:8px 18px;padding:0 14px 12px;color:#7f92a7;font-size:10px}.foot a{color:#a5b9d1}details{border-top:1px solid #303844;padding-top:8px}summary{cursor:pointer;font-size:11px;color:#d4dde8}#disk-info{font-size:11px;color:#9bb8a6;overflow-wrap:anywhere}#transfer{color:#8ca5bb}#workspace-info{font-size:11px;color:#a1b4c7}#static-fields[hidden]{display:none!important}#net-status{font-size:11px;line-height:1.5;overflow-wrap:anywhere}.net-mini{font-size:10px;color:#91a8ba}@media(max-width:1050px){.layout{grid-template-columns:minmax(0,1fr)}aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start}}@media(max-width:640px){header{padding:10px}.layout{padding:8px;display:flex;flex-direction:column}aside{display:flex}.hint{display:none}.vm-frame{min-height:430px}.brand{width:100%}.actions{margin-left:0}.field{min-width:100%}}
 </style>
 </head>
 <body>
@@ -21,7 +21,7 @@
       <div id="serial-panel"><pre id="serial-log"></pre><input id="serial-entry" type="text" placeholder="Serial ttyS0 input · press Enter" spellcheck="false" autocomplete="off"></div>
       <div id="commandbar"><select id="command-target" aria-label="Send command to"><option value="vga">VGA keyboard</option><option value="serial">Serial ttyS0</option></select><input id="command" type="text" autocomplete="off" spellcheck="false" placeholder="Type a Linux command, then Enter"><button id="send-command">Send</button></div>
     </section>
-    <div id="workspace-info">The VM, its CPU and disk execute locally. Packages and agent network calls require an external network relay.</div>
+    <div id="workspace-info">The VM executes locally. Browser networking is virtual; external internet access depends on a reachable relay. Configure Linux networking after logging in.</div>
   </main>
   <aside>
     <section class="card stack">
@@ -30,18 +30,37 @@
       <div class="row"><div class="field"><label for="disk-size">New disk capacity</label><select id="disk-size"><option value="256">256 MiB</option><option value="512">512 MiB</option><option value="1024" selected>1 GiB</option><option value="2048">2 GiB</option></select></div><div class="field"><label for="boot-source">Boot from</label><select id="boot-source"><option value="installer">Installer CD, then disk</option><option value="disk">Installed hard disk, then CD</option></select></div></div>
       <span id="disk-info">Checking browser storage…</span>
       <div class="row"><label class="file-btn">Import disk<input type="file" id="import-disk" accept=".img,.bin,application/octet-stream"></label><button id="export-disk" disabled>Export disk</button><button id="delete-disk">Reset disk</button></div>
-      <div class="row"><label class="file-btn">Use local ISO<input type="file" id="import-iso" accept=".iso,application/octet-stream"></label><label class="file-btn">Load VM state<input type="file" id="import-state" accept=".v86state,.bin,application/octet-stream"></label></div>
-      <p class="help">A new virtual disk is unformatted. Install Alpine with <code>setup-alpine</code>, then run <b>Save disk</b> and select <b>Installed hard disk</b>. Disk data is saved to this browser's IndexedDB only when you click Save disk. VM state files are separate from virtual disk files.</p>
+      <div class="row"><a class="file-btn" id="download-iso" href="https://dl-cdn.alpinelinux.org/alpine/v3.24/releases/x86/alpine-virt-3.24.2-x86.iso" target="_blank" rel="noopener noreferrer" style="text-decoration:none">1 · Download Alpine ISO ↗</a><label class="file-btn">2 · Import ISO<input type="file" id="import-iso" accept=".iso,application/octet-stream"></label></div>
+      <div class="row"><span id="iso-info" class="notice" aria-live="polite">Checking installer media…</span><button id="delete-iso" title="Remove stored installer ISO">Forget ISO</button></div>
+      <details><summary>Advanced installer sources · same-origin / CORS-enabled URL</summary>
+        <div class="field" style="margin-top:7px"><label for="iso-url">Override installer ISO URL (optional)</label><input id="iso-url" type="text" placeholder="./alpine-virt-3.24.2-x86.iso" spellcheck="false" autocomplete="off"></div>
+        <p class="help">An ISO placed next to this <code>index.html</code> on GitHub Pages loads automatically. A remote custom URL must explicitly allow CORS. The official Alpine CDN does not. Downloading the ISO through the ordinary browser link and importing it works without a proxy; the ISO is cached in IndexedDB for future visits.</p>
+      </details>
+      <div class="row"><label class="file-btn">Load VM state<input type="file" id="import-state" accept=".v86state,.bin,application/octet-stream"></label></div>
+      <p class="help">If this is your first visit, download and import the Alpine ISO once (then it is cached), or host the ISO beside this HTML. A new virtual disk is unformatted. Install Alpine with <code>setup-alpine</code>, then run <b>Save disk</b> and select <b>Installed hard disk</b>. Disk data is saved to this browser's IndexedDB only when you click Save disk. VM state files are separate from virtual disk files.</p>
     </section>
     <section class="card stack">
-      <h2>02 / Network</h2>
-      <div class="field"><label for="network">Guest network backend</label><select id="network"><option value="none">Offline / isolated</option><option value="fetch">Browser Fetch · HTTP only, CORS-limited</option><option value="wisp">WISP · HTTPS / TCP via relay</option><option value="wsproxy">Ethernet relay · WebSocket</option></select></div>
-      <div class="field"><label for="relay">WISP / relay endpoint</label><input type="text" id="relay" placeholder="wisps://your-relay.example/wisp/" autocomplete="off" spellcheck="false"></div>
-      <p class="help notice">For <code>apk</code>, <code>npm</code>, <code>git</code> and agent APIs over HTTPS, select WISP with a reachable trusted <code>wisps://</code> relay. The built-in Fetch mode does <b>not</b> provide full HTTPS/TCP. A static webpage cannot create unrestricted TCP sockets without a relay. Network settings take effect on boot.</p>
+      <h2>02 / Ethernet · ifconfig · networking</h2>
+      <div class="field"><label for="network">Browser network backend</label><select id="network"><option value="wsproxy" selected>Ethernet relay · public example (WebSocket)</option><option value="wisp">WISP · outbound TCP/HTTPS (recommended for private relay)</option><option value="fetch">Fetch · HTTP only / CORS limited</option><option value="none">Isolated · no internet</option></select></div>
+      <div class="field"><label for="relay">Relay endpoint (public example; supply your own for reliability)</label><input type="text" id="relay" value="wss://relay.widgetry.org/" placeholder="wss://relay.example/ or wisps://your-relay.example/" autocomplete="off" spellcheck="false"></div>
+      <div class="row"><div class="field"><label for="addressing">Guest addressing</label><select id="addressing"><option value="dhcp" selected>Automatic (DHCP)</option><option value="static">Static IPv4</option></select></div><div class="field"><label for="interface">Guest interface</label><input type="text" id="interface" value="eth0" maxlength="16" spellcheck="false" autocomplete="off"></div></div>
+      <div id="static-fields" class="stack" hidden>
+        <div class="row"><div class="field"><label for="static-ip">IPv4 address</label><input type="text" id="static-ip" value="192.168.86.100"></div><div class="field"><label for="static-mask">Netmask</label><input type="text" id="static-mask" value="255.255.255.0"></div></div>
+        <div class="row"><div class="field"><label for="static-gateway">Gateway</label><input type="text" id="static-gateway" value="192.168.86.1"></div><div class="field"><label for="static-dns">Nameserver</label><input type="text" id="static-dns" value="192.168.86.1"></div></div>
+      </div>
+      <div class="net-mini" id="network-info">Ethernet backend: external public relay. Guest: DHCP; gateway and DNS assigned by relay.</div>
+      <div class="row"><button id="test-relay">Test browser relay</button><button id="apply-network" disabled class="primary">Configure Linux network</button></div>
+      <div class="row"><button id="inspect-network" disabled>ifconfig · route · DNS</button><button id="test-guest" disabled>Test guest HTTPS</button></div>
+      <span id="net-status" aria-live="polite">Transport not tested. Log in as root before configuring guest networking.</span>
+      <details><summary>Equivalent Linux configuration</summary>
+        <div class="snippet"><code id="net-command-preview">ifconfig eth0 up; udhcpc -i eth0 -n -q</code><button id="copy-net-command">Copy</button></div>
+        <p class="help">Configure Linux network writes <code>/etc/network/interfaces</code>, enables OpenRC networking on subsequent boots, and applies the selected DHCP or static interface settings immediately. The guest shell must be ready and logged in as root. This is a virtual Ethernet interface—not the host's physical NIC.</p>
+      </details>
+      <p class="help notice">The included public WebSocket relay is a third-party service and may be unavailable or restrict traffic. Prefer a self-hosted TLS WISP relay for agent workloads. Changing the backend or virtual gateway requires a VM reboot. Browser relay handshake alone does not prove the guest can access the internet.</p>
     </section>
     <section class="card stack">
       <h2>03 / Install Node + npm</h2>
-      <ol class="steps"><li>Boot Alpine ISO. Log in as <code>root</code> (initially no password).</li><li>Connect WISP networking; check <code>ip addr</code>. Run <code>setup-alpine</code> to install to <code>sda</code> using <code>sys</code> mode.</li><li>Reboot from disk; save virtual disk after changes or before closing the tab.</li></ol>
+      <ol class="steps"><li>Boot Alpine ISO. Log in as <code>root</code> (initially no password).</li><li>Click <b>Configure Linux network</b> after login. Verify <code>ifconfig -a</code>, gateway, DNS and guest HTTPS. Run <code>setup-alpine</code> to install to <code>sda</code> using <code>sys</code> mode.</li><li>Reboot from disk; save virtual disk after changes or before closing the tab.</li></ol>
       <div class="snippet"><code>apk update &amp;&amp; apk add nodejs npm git curl ca-certificates</code><button data-send="apk update && apk add nodejs npm git curl ca-certificates">Run</button><button data-copy="apk update && apk add nodejs npm git curl ca-certificates">Copy</button></div>
       <div class="snippet"><code>node -v &amp;&amp; npm -v &amp;&amp; git --version</code><button data-send="node -v && npm -v && git --version">Run</button></div>
       <p class="help">Alpine 3.24 x86 has installable Node/npm packages, but emulated 32-bit x86 is slower than native and some native npm binaries/agent CLIs require x86-64.</p>
@@ -122,12 +141,43 @@ for(let step=0;step<20;step++){
 function status(message, type="idle") { $("status").textContent=message; $("lamp").className="lamp"+(type==="ok"?" ok":type==="error"?" bad":""); }
 function log(message, warn=false) { $("message").textContent=message; $("message").className=warn?"bad":""; }
 function fail(err) { console.error(err);status("Error: "+(err?.message||String(err)),"error");log("Error: "+(err?.message||String(err)),true); }
-function busyUI(value){busy=value;["boot","bundle","import-disk","delete-disk"].forEach(id=>$(id).disabled=value);}
+function busyUI(value){busy=value;["boot","bundle","import-disk","delete-disk","delete-iso"].forEach(id=>$(id).disabled=value);}
 function storedSettings(){try{return JSON.parse(localStorage.getItem("browser-linux-settings")||"{}") }catch{return {}}}
-function persistSettings(){const data={system:$("system").value,memory:$("memory").value,diskSize:$("disk-size").value,bootSource:$("boot-source").value,network:$("network").value,relay:$("relay").value};try{localStorage.setItem("browser-linux-settings",JSON.stringify(data))}catch{}}
+function persistSettings(){const data={system:$("system").value,memory:$("memory").value,diskSize:$("disk-size").value,bootSource:$("boot-source").value,network:$("network").value,relay:$("relay").value,addressing:$("addressing").value,interface:$("interface").value,staticIp:$("static-ip").value,staticMask:$("static-mask").value,staticGateway:$("static-gateway").value,staticDns:$("static-dns").value,isoUrl:$("iso-url").value};try{localStorage.setItem("browser-linux-settings",JSON.stringify(data))}catch{}}
 function idb(){return new Promise((resolve,reject)=>{if(!window.indexedDB){reject(new Error("IndexedDB unsupported"));return}const req=indexedDB.open("linux-workstation-storage",2);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains("files"))req.result.createObjectStore("files")};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
 async function storage(action,key,value){const db=await idb();return new Promise((resolve,reject)=>{const tx=db.transaction("files",action==="get"?"readonly":"readwrite");const store=tx.objectStore("files");const req=action==="get"?store.get(key):action==="put"?store.put(value,key):store.delete(key);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);tx.oncomplete=()=>db.close();tx.onabort=()=>{db.close();reject(tx.error)}})}
 function pretty(bytes){return bytes>=1073741824?(bytes/1073741824).toFixed(2)+" GiB":(bytes/1048576).toFixed(1)+" MiB"}
+const LOCAL_ISO_PATH="./alpine-virt-3.24.2-x86.iso";
+async function checkIsoFile(file){if(!file?.size || file.size<1048576)throw new Error("Installer ISO is too small or empty");const header=new TextDecoder().decode(await file.slice(32769,32774).arrayBuffer());if(header!=="CD001")throw new Error("Not a valid ISO9660 image (missing CD001 volume descriptor)");}
+async function refreshIso(){try{const f=customISO||(await storage("get","alpine-iso"));$("iso-info").textContent=f?"Installer ISO ready · "+pretty(f.size)+(customISO?" (this tab)":" (cached in browser)"):"No installer ISO imported · download and import once";$("iso-info").className=f?"good":"notice";return f}catch(e){$("iso-info").textContent="ISO cache unavailable: "+e.message;return customISO}}
+async function loadIsoBootMedia(savedDisk){
+ if(bundled?.alpine)return asset("alpine");
+ // A bootable installed disk never needs the installer CD just to start.
+ if($("boot-source").value==="disk"&&savedDisk)return null;
+ const file=customISO||await storage("get","alpine-iso").catch(()=>null);
+ if(file){return {buffer:await file.arrayBuffer()}}
+ const input=$("iso-url").value.trim();const path=input||LOCAL_ISO_PATH;
+ const url=new URL(path,document.baseURI);
+ if(!["http:","https:"].includes(url.protocol))throw new Error("Installer ISO URL must use HTTP(S)");
+ try{
+  const check=await fetch(url.href,{method:"HEAD",mode:"cors",cache:"no-store",signal:AbortSignal.timeout(7000)});
+  if(!check.ok)throw new Error("HTTP "+check.status);
+  const ct=check.headers.get("content-type")||"";
+  if(ct.includes("text/html"))throw new Error("Server returned HTML instead of an ISO");
+ }catch(err){
+  const suffix=url.origin===location.origin?"Place alpine-virt-3.24.2-x86.iso alongside index.html on GitHub Pages, or use 'Download Alpine ISO' then 'Import ISO'.":"The URL must allow CORS. Alpine's official CDN does not; use 'Download Alpine ISO' then 'Import ISO'.";
+  throw new Error("Installer inaccessible ("+url.href+"): "+err.message+". "+suffix);
+ }
+ return {url:url.href};
+}
+async function getIsoForExport(){
+ if(bundled?.alpine)return decode64(bundled.alpine);
+ const file=customISO||await storage("get","alpine-iso").catch(()=>null);
+ if(file)return file.arrayBuffer();
+ const url=new URL($("iso-url").value.trim()||LOCAL_ISO_PATH,document.baseURI).href;
+ try{return await fetchBytes(url)}catch(e){throw new Error("Cannot package Alpine ISO into standalone HTML: "+e.message+". Import the official ISO from your computer first.")}
+}
+
 async function refreshDisk(){try{const d=await storage("get","hda");$("disk-info").textContent=d?"Saved virtual disk: "+pretty(d.size??d.byteLength)+" in browser storage":bundled?.disk?"Initial bundled disk: "+pretty(Math.floor(bundled.disk.length*.75))+" · subsequent saves use browser storage":"No saved disk · new blank virtual drive on boot";$("disk-info").className=d||bundled?.disk?"good":"";return d}catch(e){$("disk-info").textContent="Storage unavailable: "+e.message;return null}}
 function resetScreen(){$("screen_container").innerHTML='<div style="white-space:pre;font:14px/14px monospace"></div><canvas style="display:none;image-rendering:pixelated"></canvas>';$('serial-log').textContent='';serialText='';}
 function decode64(s){const str=atob(s),u=new Uint8Array(str.length);for(let i=0;i<str.length;i++)u[i]=str.charCodeAt(i);return u.buffer}
@@ -136,7 +186,61 @@ function asset(name){return bundled?.[name]?{buffer:decode64(bundled[name])}:{ur
 function saveDownload(name,bytes,mime="application/octet-stream"){const blob=bytes instanceof Blob?bytes:new Blob([bytes],{type:mime});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),20000)}
 function activate(tab){mode=tab;$("display").style.display=tab==="vga"?"flex":"none";$("serial-panel").style.display=tab==="serial"?"flex":"none";$("vga-tab").classList.toggle("selected",tab==="vga");$("serial-tab").classList.toggle("selected",tab==="serial");$("command-target").value=tab;}
 function markRunning(running){isPaused=!running;$("pause").disabled=!vm;$("power").disabled=!vm;$("pause").textContent=running?"Pause":"Resume";status(running?"Linux running":"Linux paused",running?"ok":"idle")}
-function getNet(){const net=$("network").value;const relay=$("relay").value.trim();if(net==="none")return undefined;if(net==="fetch")return {type:"virtio",relay_url:"fetch"};if(!relay)throw new Error("Enter a relay URL for "+net);if(net==="wisp"&&!/^wisps?:\/\//i.test(relay))throw new Error("WISP relay must use wisps:// (or wisp:// for insecure local testing)");if(net==="wsproxy"&&!/^wss?:\/\//i.test(relay))throw new Error("Ethernet relay must use wss:// or ws://");if(location.protocol==="https:"&&(/^(wisp|ws):\/\//i.test(relay)))throw new Error("Use a TLS-secured relay on HTTPS pages (wisps:// or wss://)");return {type:"virtio",relay_url:relay,...(net==="wisp"?{dns_method:"doh"}:{})}}
+function netStatus(msg,success=false,error=false){const el=$("net-status");el.textContent=msg;el.className=error?"bad":success?"good":""}
+function interfaceName(){const name=$("interface").value.trim();if(!/^[a-zA-Z][a-zA-Z0-9_.-]{0,15}$/.test(name))throw new Error("Guest interface name must be 1–16 letters/digits/._- and start with a letter");return name}
+function ipv4(field){const val=$(field).value.trim(),bits=val.split(".");if(bits.length!==4||bits.some(x=>!/^(0|[1-9][0-9]{0,2})$/.test(x)||+x>255))throw new Error("Invalid IPv4 address in "+field);return val}
+function netValues(){return {iface:interfaceName(),addr:ipv4("static-ip"),mask:ipv4("static-mask"),gateway:ipv4("static-gateway"),dns:ipv4("static-dns")}}
+function guestNetCommand(){
+ const iface=interfaceName(),persist="(rc-update add networking boot >/dev/null 2>&1 || true)",check=`ifconfig ${iface}; route -n; cat /etc/resolv.conf`;
+ if($("addressing").value==="dhcp"){
+  const config=`auto lo\\niface lo inet loopback\\n\\nauto ${iface}\\niface ${iface} inet dhcp\\n`;
+  return `printf '${config}' > /etc/network/interfaces && ${persist} && ifconfig ${iface} up && (udhcpc -i ${iface} -n -q -t 5 -T 3 || ifup ${iface}) && ${check}`;
+ }
+ const v=netValues();
+ const config=`auto lo\\niface lo inet loopback\\n\\nauto ${iface}\\niface ${iface} inet static\\n    address ${v.addr}\\n    netmask ${v.mask}\\n    gateway ${v.gateway}\\n`;
+ return `printf '${config}' > /etc/network/interfaces && ${persist} && ifconfig ${iface} up && ifconfig ${iface} ${v.addr} netmask ${v.mask} && (route del default >/dev/null 2>&1 || true) && route add default gw ${v.gateway} ${iface} && printf 'nameserver ${v.dns}\\n' > /etc/resolv.conf && ${check}`;
+}
+function updateNetworkUI(){
+ const kind=$("network").value,staticMode=$("addressing").value==="static", relayNeeded=kind==="wisp"||kind==="wsproxy";
+ $("static-fields").hidden=!staticMode;$("relay").disabled=!relayNeeded;
+ const info=kind==="none"?"No external connectivity (virtual NIC may still be visible).":kind==="fetch"?"Guest uses virtual 192.168.86.0/24 DHCP, but HTTPS/npm will not work in Fetch mode.":kind==="wisp"?"WISP provides virtual DHCP (192.168.86.100), gateway/DNS (192.168.86.1), outbound TCP/HTTPS. Requires a real WISP relay.":"Raw Ethernet WebSocket relay provides DHCP and networking. IP, gateway and DNS are assigned by that relay (not necessarily 192.168.86.0/24).";
+ $("network-info").textContent=info+(staticMode?" Static addressing overrides DHCP in the guest.":" Guest uses DHCP.");
+ try{$("net-command-preview").textContent=guestNetCommand()}catch(e){$("net-command-preview").textContent=e.message}
+}
+function getNet(){
+ const kind=$("network").value,relay=$("relay").value.trim();
+ if(kind==="none")return {type:"virtio",relay_url:"none"};
+ if(kind==="fetch")return {type:"virtio",relay_url:"fetch",dns_method:"static"};
+ if(!relay)throw new Error("Enter a relay URL for "+kind);
+ if(kind==="wisp"&&!/^wisps?:\/\/[^\s/]+/i.test(relay))throw new Error("WISP relay must be wisps://host/path (wisp:// only for local HTTP testing)");
+ if(kind==="wsproxy"&&!/^wss?:\/\/[^\s/]+/i.test(relay))throw new Error("Ethernet relay must be wss://host/path or ws://host/path");
+ if(location.protocol==="https:"&&/^(?:wisp|ws):\/\//i.test(relay))throw new Error("Use a TLS relay on HTTPS pages (wisps:// or wss://)");
+ const opts={type:"virtio",relay_url:relay};if(kind==="wisp")opts.dns_method="doh";
+ // The WISP virtual router creates the DHCP lease and ARP/DNS gateway.
+ if(kind==="wisp"&&$("addressing").value==="static"){
+  const v=netValues();if(v.mask!=="255.255.255.0")throw new Error("WISP synthetic gateway supports a /24 subnet; use netmask 255.255.255.0");
+  if(v.addr.split(".").slice(0,3).join(".")!==v.gateway.split(".").slice(0,3).join("."))throw new Error("WISP guest IP and gateway must be in the same /24 subnet");
+  opts.vm_ip=v.addr;opts.router_ip=v.gateway;
+ }
+ return opts;
+}
+async function testRelay(){
+ const mode=$("network").value;
+ if(mode==="none"){netStatus("Isolated backend has no remote transport.",false,true);return}
+ if(mode==="fetch"){
+  netStatus("Fetch mode uses browser HTTP; it does not establish a general TCP connection. Use WISP/ethernet for HTTPS.");return;
+ }
+ try{
+  getNet();const relay=$("relay").value.trim().replace(/^wisps:/i,"wss:").replace(/^wisp:/i,"ws:");
+  netStatus("Opening relay WebSocket handshake …");$("test-relay").disabled=true;
+  await new Promise((resolve,reject)=>{
+   let socket,finished=false;const end=(err)=>{if(finished)return;finished=true;clearTimeout(timeout);try{socket?.close()}catch{};err?reject(err):resolve()};
+   const timeout=setTimeout(()=>end(new Error("No WebSocket handshake within 8 seconds")),8000);
+   try{socket=new WebSocket(relay);socket.addEventListener("open",()=>end());socket.addEventListener("error",()=>end(new Error("WebSocket handshake failed; check the relay endpoint, TLS and network")));socket.addEventListener("close",()=>end(new Error("Relay closed before handshake completed")))}catch(e){end(e)}
+  });
+  netStatus("Relay WebSocket opened. This verifies only the browser-to-relay handshake; use Test guest HTTPS to verify routing/DNS.",true);
+ }catch(e){netStatus(e.message,false,true)}finally{$("test-relay").disabled=false}
+}
 async function boot(){if(busy)return;busyUI(true);status("Preparing Linux …");$("transfer").textContent="";try{
  if(typeof V86!=="function")throw new Error("Emulator script unavailable. Verify access to jsDelivr.");
  if(vm){if(dirty && !confirm("This VM has disk writes not yet saved. Reboot anyway?"))return;await vm.stop();await vm.destroy();vm=null;diskBuffer=null}
@@ -147,11 +251,12 @@ async function boot(){if(busy)return;busyUI(true);status("Preparing Linux …");
    diskBuffer=saved?await saved.arrayBuffer():new ArrayBuffer(Number($("disk-size").value)*1048576);
    options.hda={buffer:diskBuffer};
    options.boot_order=$("boot-source").value==="disk"?0x132:0x123;
-   options.cdrom=customISO?{buffer:await customISO.arrayBuffer()}:asset("alpine");
+   const media=await loadIsoBootMedia(saved);
+   if(media)options.cdrom=media;
  } else if(system==="desktop") options.cdrom=customISO?{buffer:await customISO.arrayBuffer()}:asset("desktop");
  else{options.bzimage=asset("shell");options.cmdline="tsc=reliable mitigations=off random.trust_cpu=on"}
  if(bundled?.wasm){options.wasm_fn=imports=>WebAssembly.instantiate(decode64(bundled.wasm),imports).then(result=>result.instance.exports)}else options.wasm_path=URLS.wasm;
- vm=new V86(options);dirty=false;$("save-disk").disabled=system!=="alpine";$("export-disk").disabled=system!=="alpine";$("stage-agent").disabled=false;$("save-state").disabled=false;
+ vm=new V86(options);dirty=false;$("save-disk").disabled=system!=="alpine";$("export-disk").disabled=system!=="alpine";$("stage-agent").disabled=false;$("save-state").disabled=false;["apply-network","inspect-network","test-guest"].forEach(id=>$(id).disabled=false);netStatus("NIC instantiated. Log in as root, then click Configure Linux network; verify guest HTTPS separately.");
  vm.add_listener("emulator-ready",()=>status("Emulator initialized; booting Linux …"));vm.add_listener("emulator-started",()=>markRunning(true));vm.add_listener("emulator-stopped",()=>markRunning(false));
  vm.add_listener("ide-write-end",()=>{if(system==="alpine")dirty=true});
  vm.add_listener("download-progress",e=>{if(e?.lengthComputable&&e.total)$("transfer").textContent="Downloading "+Math.round(e.loaded/e.total*100)+"%"});
@@ -164,13 +269,26 @@ async function extractDisk(){if(!vm?.disk_images?.hda?.get_buffer)throw new Erro
 async function withQuiescedVM(job){if(!vm)throw new Error("Boot Alpine first");const wasRunning=!isPaused;if(wasRunning)await vm.stop();try{return await job()}finally{if(wasRunning)await vm.run()}}
 async function saveDisk(){if(system!=="alpine")throw new Error("Only Alpine has an installable disk");updatingDisk=true;$("save-disk").disabled=true;status("Saving full disk to browser storage …");try{await withQuiescedVM(async()=>{const buffer=await extractDisk();await storage("put","hda",new Blob([buffer]));dirty=false});await refreshDisk();status("Disk saved in browser storage","ok");log("Disk saved. Changes made after this save will not persist unless saved again.")}finally{updatingDisk=false;$("save-disk").disabled=false}}
 $("boot").addEventListener("click",boot);
+$("test-relay").addEventListener("click",testRelay);
+$("apply-network").addEventListener("click",()=>{try{if(!vm)throw new Error("Boot Linux first");const cmd=guestNetCommand();sendCmd(cmd,$("command-target").value);netStatus("Network setup command sent to guest. Read the Linux terminal for DHCP success, interface IP, route and DNS; root login required.")}catch(e){netStatus(e.message,false,true)}});
+$("inspect-network").addEventListener("click",()=>{sendCmd("ifconfig -a; route -n; cat /etc/resolv.conf; ip link show",$("command-target").value);netStatus("Sent ifconfig, route and resolver inspection to the guest console.")});
+$("test-guest").addEventListener("click",()=>{sendCmd("wget -T 15 -S -O /dev/null https://dl-cdn.alpinelinux.org/alpine/ 2>&1; echo guest-https-exit:$?",$("command-target").value);netStatus("Sent guest HTTPS test. Check guest console for TLS/HTTP response and guest-https-exit:0.")});
+$("copy-net-command").addEventListener("click",async()=>{try{const command=guestNetCommand();try{await navigator.clipboard.writeText(command);netStatus("Linux networking command copied.",true)}catch{$("command").value=command;netStatus("Clipboard unavailable; copied command into command input.")}}catch(e){netStatus(e.message,false,true)}});
 $("pause").addEventListener("click",async()=>{if(!vm)return;try{if(isPaused)await vm.run();else await vm.stop()}catch(e){fail(e)}});
-$("power").addEventListener("click",async()=>{if(!vm)return;try{if(dirty&&!confirm("Unsaved disk writes will be lost unless you save the disk. Stop anyway?"))return;await vm.stop();await vm.destroy();vm=null;diskBuffer=null;isPaused=true;["power","pause","save-disk","save-state","export-disk","stage-agent"].forEach(id=>$(id).disabled=true);status("Stopped");}catch(e){fail(e)}});
+$("power").addEventListener("click",async()=>{if(!vm)return;try{if(dirty&&!confirm("Unsaved disk writes will be lost unless you save the disk. Stop anyway?"))return;await vm.stop();await vm.destroy();vm=null;diskBuffer=null;isPaused=true;["power","pause","save-disk","save-state","export-disk","stage-agent","apply-network","inspect-network","test-guest"].forEach(id=>$(id).disabled=true);netStatus("VM stopped · guest network unavailable");status("Stopped");}catch(e){fail(e)}});
 $("save-disk").addEventListener("click",()=>saveDisk().catch(fail));
 $("export-disk").addEventListener("click",async()=>{try{status("Exporting virtual disk …");await withQuiescedVM(async()=>saveDownload("browser-linux-alpine-x86.img",await extractDisk()));status("Disk exported","ok")}catch(e){fail(e)}});
 $("delete-disk").addEventListener("click",async()=>{if(vm){log("Stop the VM before resetting disk storage.",true);return}if(!confirm("Delete the saved Linux virtual disk? This permanently deletes installed packages and guest files from browser storage."))return;try{await storage("delete","hda");await refreshDisk();status("Saved disk deleted");}catch(e){fail(e)}});
 $("import-disk").addEventListener("change",async ev=>{const file=ev.target.files?.[0];if(!file)return;try{if(vm)throw new Error("Stop the VM before importing a disk");if(file.size%512)throw new Error("Disk image size must be a multiple of 512 bytes");await storage("put","hda",file);$("boot-source").value="disk";persistSettings();await refreshDisk();status("Disk imported · boot from disk","ok")}catch(e){fail(e)}finally{ev.target.value=""}});
-$("import-iso").addEventListener("change",ev=>{customISO=ev.target.files?.[0]||null;isoFileName=customISO?.name||"";log(customISO?"Local installer mounted for next boot: "+isoFileName:"No local ISO selected")});
+$("import-iso").addEventListener("change",async ev=>{
+ const file=ev.target.files?.[0];if(!file)return;
+ try{await checkIsoFile(file);customISO=file;isoFileName=file.name;
+  try{await storage("put","alpine-iso",file);log("Alpine ISO imported and saved for future boots: "+isoFileName)}
+  catch(e){log("ISO ready for this tab; browser storage did not save it: "+e.message,true)}
+  await refreshIso();status("Alpine installer ready · click Boot Linux","ok");
+ }catch(e){fail(e)}finally{ev.target.value=""}
+});
+$("delete-iso").addEventListener("click",async()=>{try{if(vm)throw new Error("Stop the VM before removing ISO");customISO=null;isoFileName="";await storage("delete","alpine-iso");await refreshIso();status("Cached installer ISO forgotten")}catch(e){fail(e)}});
 $("save-state").addEventListener("click",async()=>{try{status("Capturing RAM/device state …");const state=await vm.save_state();saveDownload("browser-linux-"+system+".v86state",state);status("State downloaded","ok");log("The state file does not contain the separate writable hard disk. Save the disk too.")}catch(e){fail(e)}});
 $("import-state").addEventListener("change",async ev=>{const file=ev.target.files?.[0];if(!file)return;try{if(!vm)throw new Error("Boot the matching Linux configuration and disk first");status("Restoring VM state …");await vm.restore_state(await file.arrayBuffer());status("State restored","ok")}catch(e){fail(e)}finally{ev.target.value=""}});
 $("fullscreen").addEventListener("click",()=>{try{vm?vm.screen_go_fullscreen():$("display").requestFullscreen?.()}catch(e){fail(e)}});
@@ -181,10 +299,11 @@ document.querySelectorAll("button[data-send]").forEach(button=>button.addEventLi
 document.querySelectorAll("button[data-copy]").forEach(button=>button.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(button.dataset.copy);log("Command copied to clipboard")}catch{const text=button.dataset.copy;$("command").value=text;$("command").focus();log("Clipboard unavailable. Command placed in the command input.")}}));
 $("stage-agent").addEventListener("click",async()=>{try{if(!vm)throw new Error("Boot Linux first");await vm.create_file("agent.mjs",new TextEncoder().encode(AGENT_SOURCE));status("Agent script staged on virtual host9p filesystem","ok");log("Mount host9p inside the guest at /mnt/host, then copy agent.mjs to your workspace.")}catch(e){fail(e)}});
 $("download-agent").addEventListener("click",()=>saveDownload("agent.mjs",AGENT_SOURCE,"text/javascript"));
-["system","memory","disk-size","boot-source","network","relay"].forEach(id=>$(id).addEventListener("change",persistSettings));$("relay").addEventListener("input",persistSettings);
-async function fetchBytes(url){const res=await fetch(url,{mode:"cors"});if(!res.ok)throw new Error("Cannot fetch asset (HTTP "+res.status+"): "+url);return res.arrayBuffer()}
+["system","memory","disk-size","boot-source","network","relay","addressing","interface","static-ip","static-mask","static-gateway","static-dns","iso-url"].forEach(id=>$(id).addEventListener("change",()=>{persistSettings();updateNetworkUI()}));
+["relay","interface","static-ip","static-mask","static-gateway","static-dns","iso-url"].forEach(id=>$(id).addEventListener("input",()=>{persistSettings();updateNetworkUI()}));
+async function fetchBytes(url){let res;try{res=await fetch(url,{mode:"cors"})}catch(e){throw new Error("CORS or connection failure loading "+url+": "+e.message)}if(!res.ok)throw new Error("Cannot fetch asset (HTTP "+res.status+"): "+url);return res.arrayBuffer()}
 $("bundle").addEventListener("click",async()=>{if(busy)return;busyUI(true);try{
- status("Preparing standalone HTML …");const which=$("system").value;const names=["wasm","bios","vga",which];const embedded={mode:which};for(const name of names){$("transfer").textContent="Packing "+name+" …";embedded[name]=bundled?.[name]||encode64(name===which&&customISO?await customISO.arrayBuffer():await fetchBytes(URLS[name]))}
+ status("Preparing standalone HTML …");const which=$("system").value;const names=["wasm","bios","vga",which];const embedded={mode:which};for(const name of names){$("transfer").textContent="Packing "+name+" …";embedded[name]=bundled?.[name]||encode64(name==="alpine"?await getIsoForExport():name===which&&customISO?await customISO.arrayBuffer():await fetchBytes(URLS[name]))}
  if($("bundle-disk").checked&&which==="alpine"){if(vm&&dirty)throw new Error("Save disk before exporting its installed state");const disk=await storage("get","hda");if(!disk)throw new Error("No saved disk to bundle: use Save disk first");if(disk.size>536870912&&!confirm("Bundling this disk may create an HTML file larger than 700 MB, and browsers may struggle. Continue?"))return;$("transfer").textContent="Packing disk …";embedded.disk=encode64(await disk.arrayBuffer())}
  let runtime;if(bundled){const current=$("v86-runtime");runtime=current.textContent;if(!runtime.trim())runtime=await (await fetch(URLS.js)).text()}else runtime=await(await fetch(URLS.js)).text();
  const clone=document.documentElement.cloneNode(true);clone.querySelector("#screen_container").innerHTML="<div></div><canvas></canvas>";clone.querySelector("#serial-log").textContent="";clone.querySelector("#status").textContent="Configured · ready to boot";clone.querySelector("#transfer").textContent="";clone.querySelector("#disk-info").textContent="Checking browser storage…";clone.querySelector("#message").textContent="Standalone offline Linux boot assets; network relay still needed for external HTTPS.";
@@ -194,9 +313,9 @@ $("bundle").addEventListener("click",async()=>{if(busy)return;busyUI(true);try{
  }catch(e){fail(e)}finally{busyUI(false)}});
 window.addEventListener("beforeunload",ev=>{if(vm&&dirty){ev.preventDefault();ev.returnValue=""}});
 window.addEventListener("error",ev=>{if(ev.target?.tagName==="SCRIPT"&&typeof V86!=="function")fail(new Error("Cannot load emulator script; check network"))},true);
-const settings=storedSettings();for(const [name,id] of Object.entries({system:"system",memory:"memory",diskSize:"disk-size",bootSource:"boot-source",network:"network",relay:"relay"}))if(settings[name]!==undefined&&$(id)){if([...($(id).options||[])].length&&!Array.from($(id).options).some(x=>x.value===settings[name]))continue;$(id).value=settings[name]}
+const settings=storedSettings();for(const [name,id] of Object.entries({system:"system",memory:"memory",diskSize:"disk-size",bootSource:"boot-source",network:"network",relay:"relay",addressing:"addressing",interface:"interface",staticIp:"static-ip",staticMask:"static-mask",staticGateway:"static-gateway",staticDns:"static-dns",isoUrl:"iso-url"}))if(settings[name]!==undefined&&$(id)){if([...($(id).options||[])].length&&!Array.from($(id).options).some(x=>x.value===settings[name]))continue;$(id).value=settings[name]}
 if(bundled){$("system").value=bundled.mode;$("system").disabled=true;if(bundled.disk)$("boot-source").value="disk";log("Emulator assets are bundled. External network relay still required for package downloads.")}
-refreshDisk();
+updateNetworkUI();refreshDisk();refreshIso();
 })();
 </script>
 </body>
