@@ -58,10 +58,11 @@ footer{color:#888;font-size:11px;padding:0 2px 6px}
 <small id="asset-url">Discovering GitHub repository…</small>
 <small>Initial load downloads the ISO from the separate <code>linux-assets</code> branch. Subsequent loads use browser IndexedDB cache. No ISO needs to be committed on your Pages branch.</small>
 </div></details>
-<details class="group"><summary>Networking</summary><div class="group-body"><label class="muted auto-label"><input checked="" id="auto-setup" type="checkbox"/> Auto-configure Alpine, bash, sudo, Node/npm and Git</label><label class="muted">v86 network relay (HTTPS-compatible WebSocket)</label><input class="input" id="relay" placeholder="wisps://relay.example.org/" spellcheck="false" value="wss://relay.widgetry.org/"/>
+<details class="group"><summary>Networking</summary><div class="group-body"><label class="muted auto-label"><input checked="" id="auto-setup" type="checkbox"/> Auto-provision Alpine, Node/npm, bash, sudo and Git</label><label class="muted">v86 network relay (HTTPS-compatible WebSocket)</label><input class="input" id="relay" placeholder="wisps://relay.example.org/" spellcheck="false" value="wss://relay.widgetry.org/"/>
 <div class="row"><button id="guest-network">Configure DHCP</button><button id="guest-test">Inspect network</button></div><small>Guest NIC is VirtIO. Relay must actually support outbound networking; a public relay is not guaranteed. Settings apply when rebooted.</small>
 </div></details>
 <details class="group"><summary>Guest tools / disk</summary><div class="group-body"><div class="row"><button id="guest-apk">Provision / retry setup</button><button id="guest-install">Alpine disk installer</button></div>
+<small id="provision-status" role="status" aria-live="polite">Provisioning starts automatically after the live Alpine root shell appears.</small>
 <div class="row"><button id="save-disk">Save disk to browser</button><button id="download-disk">Export disk</button><button id="import-disk">Import disk</button></div>
 <small>Installed tools include bash, sudo, curl, Git, Node and npm (when the guest can reach Alpine package mirrors). Root does not need sudo. Live ISO changes are temporary until you install to the virtual disk. Shut down before saving the disk.</small>
 </div></details>
@@ -109,6 +110,11 @@ footer{color:#888;font-size:11px;padding:0 2px 6px}
  $("asset-url").textContent=assetURL;
  let vm=null, iso=null, disk=null, paused=false, starting=false, running=false, serial="", renderTimer=null;
  let bootEpoch=0, setupRunning=false, setupComplete=false, pasteSerial=false, guestCommandBusy=false, scriptRecord=null;
+ const APK_MAIN="https://dl-cdn.alpinelinux.org/alpine/v3.24/main";
+ const APK_COMMUNITY="https://dl-cdn.alpinelinux.org/alpine/v3.24/community";
+ const APK_REPOS=`-X ${APK_MAIN} -X ${APK_COMMUNITY}`;
+ const APK_REPO_SETUP=`printf '%s\\n' '${APK_MAIN}' '${APK_COMMUNITY}' > /etc/apk/repositories`;
+ function provisionStatus(text,state="idle"){const el=$("provision-status");el.textContent=text;el.dataset.state=state;$("guest-apk").disabled=setupRunning;}
  function message(s,level="info"){$("status").textContent=s;$("led").className="led"+(level==="ok"?" ok":level==="error"?" fail":"");}
  function log(s){$("log").textContent=`[${new Date().toLocaleTimeString()}] ${s}\n`+$("log").textContent.slice(0,12000);}
  function fail(e){message(e?.message||String(e),"error");log("ERROR: "+(e?.stack||e));console.error(e);}
@@ -139,7 +145,7 @@ footer{color:#888;font-size:11px;padding:0 2px 6px}
  function validISO(buffer){if(!(buffer instanceof ArrayBuffer)||buffer.byteLength<40000)return false; const b=new Uint8Array(buffer,32769,5);return String.fromCharCode(...b)==="CD001";}
  async function getDisk(){if(disk)return disk;try{const data=await dbOp("get",DISK_KEY);if(data instanceof ArrayBuffer&&data.byteLength>=8*1024*1024){disk=data;log(`Restored ${(disk.byteLength/1048576).toFixed(0)} MiB hard disk from browser`);return disk;}}catch(e){log("Disk cache read unavailable: "+e.message);}disk=new ArrayBuffer(512*1024*1024);log("Created new blank 512 MiB disk. Install Alpine to it with setup-alpine.");return disk;}
  function screen(){ $("screen_container").innerHTML='<div style="white-space:pre;font:14px/14px monospace"></div><canvas style="display:none;image-rendering:pixelated"></canvas>';$("serial-log").textContent="";serial="";}
- async function boot(){if(starting)return;starting=true;const epoch=++bootEpoch;setupRunning=false;setupComplete=false;buttons();
+ async function boot(){if(starting)return;starting=true;const epoch=++bootEpoch;setupRunning=false;setupComplete=false;provisionStatus("Waiting for Alpine to boot…");buttons();
    scriptRecord=null;$("run-script").disabled=true;$("script-status").textContent="Select a .sh file to stage into this VM.";
    try{
      if(typeof V86!=="function")throw new Error("v86 runtime script failed to load from jsDelivr");
@@ -201,10 +207,11 @@ footer{color:#888;font-size:11px;padding:0 2px 6px}
    log(label+" complete");
  }
  async function automaticSetup(guest=vm,epoch=bootEpoch,manual=false){
-   if(!guest||!running){log("Boot Linux first");return;}
-   if(setupRunning){log("Automatic setup already running");return;}
+   if(!guest||!running){provisionStatus("Boot Alpine first, then select Provision / retry setup.","error");return;}
+   if(setupRunning){log("Provisioning already in progress");return;}
    if(setupComplete&&!manual)return;
    setupRunning=true;
+   provisionStatus("Waiting for Alpine root shell…","running");
    try{
      message("Waiting for Alpine root shell…","ok");
      let snapshot=readScreen(guest);
@@ -214,29 +221,48 @@ footer{color:#888;font-size:11px;padding:0 2px 6px}
          snapshot=readScreen(guest);
        }
        if(LOGIN_PROMPT.test(snapshot)){
-         if($("bootdisk").checked){message("Waiting for installed Linux root login","ok");log("Log in with your installed Alpine credentials to complete setup");}
-         else{
+         if($("bootdisk").checked){
+           provisionStatus("Log into the installed Linux system as root to continue.","running");
+           log("Installed Linux may require a password. Waiting for you to log in.");
+         }else{
            log("Signing in to Alpine live environment as root (no password)");
            guest.keyboard_send_text("root\n");
          }
        }
-       // Installed systems can require a password; do not attempt to bypass authentication.
        await awaitScreen(guest,epoch,SHELL_PROMPT,180000);
      }
-     // Network is often already supplied by the relay DHCP server. Do not reset an existing route.
-     await runChecked(guest,epoch,"ifconfig eth0 up; if ! route -n | grep -q '^0.0.0.0 '; then udhcpc -n -q -i eth0; fi; route -n | grep -q '^0.0.0.0 '","Checking Ethernet and DHCP",45000);
-     await runChecked(guest,epoch,"printf '%s\\n' 'https://dl-cdn.alpinelinux.org/alpine/v3.24/main' 'https://dl-cdn.alpinelinux.org/alpine/v3.24/community' > /etc/apk/repositories; test $(wc -l < /etc/apk/repositories) -eq 2","Configuring Alpine package repositories",30000);
-     await runChecked(guest,epoch,"apk update","Updating Alpine package indexes",180000);
-     await runChecked(guest,epoch,"apk add --no-cache bash sudo curl git ca-certificates iproute2 coreutils tar gzip unzip && command -v bash && command -v sudo && command -v curl","Installing shell and development tools",300000);
-     await runChecked(guest,epoch,"apk add --no-cache nodejs npm && node --version && npm --version","Installing Node.js and npm",300000);
+     if(guest!==vm||epoch!==bootEpoch) return;
+     // The emulated Ethernet interface generally gets DHCP through the configured relay.
+     // Do not reset a working route. Fail clearly if no default route exists.
+     provisionStatus("Checking Ethernet and DHCP…","running");
+     await runChecked(guest,epoch,"ifconfig eth0 up; if ! route -n | grep -q '^0.0.0.0 '; then udhcpc -n -q -i eth0; fi; route -n | grep -q '^0.0.0.0 '","Checking Ethernet and DHCP",55000);
+     provisionStatus("Writing Alpine main/community repositories…","running");
+     await runChecked(guest,epoch,APK_REPO_SETUP+"; test -s /etc/apk/repositories && grep -qF '"+APK_MAIN+"' /etc/apk/repositories && grep -qF '"+APK_COMMUNITY+"' /etc/apk/repositories","Configuring Alpine repositories",30000);
+     // Passing explicit -X repositories ensures the live ISO's /media/cdrom/apks-only
+     // configuration cannot silently hide nodejs/npm. --no-cache fetches fresh indexes.
+     provisionStatus("Fetching Alpine online package indexes…","running");
+     await runChecked(guest,epoch,`apk update ${APK_REPOS}`,"Refreshing online Alpine repositories",180000);
+     provisionStatus("Installing Node.js and npm…","running");
+     await runChecked(guest,epoch,`apk add --no-cache ${APK_REPOS} nodejs npm`,"Installing Node.js and npm",360000);
+     await runChecked(guest,epoch,"command -v node >/dev/null && command -v npm >/dev/null && node --version && npm --version","Verifying Node.js and npm",45000);
+     provisionStatus("Installing developer tools…","running");
+     await runChecked(guest,epoch,`apk add --no-cache ${APK_REPOS} bash sudo git curl ca-certificates iproute2 coreutils tar gzip unzip`,"Installing Bash, sudo, Git and utilities",360000);
+     await runChecked(guest,epoch,"command -v bash >/dev/null && command -v sudo >/dev/null && command -v git >/dev/null && command -v node >/dev/null && command -v npm >/dev/null","Verifying development tools",45000);
      setupComplete=true;
-     message("Linux ready · npm, Git, bash and sudo installed","ok");
-     log("Alpine provisioning complete. Packages in live ISO RAM are temporary; install Alpine to the virtual disk for persistence.");
+     provisionStatus("Ready — Node.js, npm, Bash, sudo and Git verified.","success");
+     message("Linux ready · Node.js and npm verified","ok");
+     log("Alpine packages installed and verified. Live-ISO changes are temporary; install Alpine onto the virtual disk for persistence.");
    }catch(e){
      if(guest!==vm||epoch!==bootEpoch)return;
-     log("Setup stopped: "+e.message);
-     message("Setup failed · inspect terminal and activity log","error");
-   }finally{if(guest===vm&&epoch===bootEpoch)setupRunning=false;}
+     setupComplete=false;
+     const reason=e?.message||String(e);
+     const tail=readScreen(guest).split("\n").slice(-8).join(" | ").trim();
+     log("Provision failed: "+reason+(tail?" | Console: "+tail.slice(-700):""));
+     provisionStatus("Failed: "+reason+" — click Provision / retry setup.","error");
+     message("Provision failed — open Guest tools / disk to retry","error");
+   }finally{
+     if(guest===vm&&epoch===bootEpoch){setupRunning=false;$("guest-apk").disabled=false;}
+   }
  }
  // Clipboard handling: right click inside VGA/serial reads the clipboard on secure origins.
  // Firefox may deny readText(), in which case show an input with native Ctrl+V support.
