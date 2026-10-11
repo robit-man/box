@@ -1,442 +1,132 @@
-<!DOCTYPE html>
-
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1" name="viewport"/>
-<meta content="dark" name="color-scheme"/>
-<title>BOX — Alpine Linux in your browser</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>BOX — Linux x86_64 / QEMU Wasm</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" crossorigin="anonymous">
 <style>
-:root{font:13px/1.45 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;color-scheme:dark;color:#ededed;background:#080808}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;flex-direction:column}
-header{padding:12px 18px;display:flex;align-items:center;gap:14px;background:#0f0f0f;border-bottom:1px solid #343434}
-.brand{font-size:17px;font-weight:750;letter-spacing:.08em}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-left:auto}
-button,input,select,textarea{font:inherit;color:inherit}button{background:#1b1b1b;border:1px solid #505050;padding:8px 11px;border-radius:3px;cursor:pointer;transition:background .13s}
-button:hover{background:#303030;border-color:#888}button:disabled{cursor:default;opacity:.4}.primary{background:#eee;color:#080808;border-color:#eee;font-weight:750}.primary:hover{background:#cfcfcf;border-color:#cfcfcf}
-main{flex:1;min-height:0;display:flex;flex-direction:column;gap:9px;padding:13px 16px}.statusbar{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#aeaeae;font-size:12px}
-.led{height:8px;width:8px;border-radius:50%;background:#888;display:inline-block;margin-right:8px}.led.ok{background:#5bd886}.led.fail{background:#f26b71}
-#progressbar{width:100%;height:3px;background:#2c2c2c;overflow:hidden}#progress{height:100%;width:0;background:#57d581;transition:width .2s}
-.shell{min-height:360px;flex:1;display:flex;flex-direction:column;border:1px solid #484848;border-radius:3px;background:#000;overflow:hidden}
-.shellbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px 9px;background:#161616;border-bottom:1px solid #3a3a3a}
-.tabs{display:flex;gap:4px}.tab{border:0;background:transparent;color:#aaa;padding:6px 11px}.tab.active{box-shadow:inset 0 -2px #eee;color:#fff}
-#paste-button{margin-left:auto;padding:6px 12px;background:transparent}
-#vmviewport{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;padding:12px}
-#screen_container{display:inline-block;flex:none;outline:none;cursor:text}#screen_container>div{white-space:pre;font:14px/14px monospace}#screen_container>canvas{display:none;image-rendering:pixelated}
-#serial-view{display:none;flex:1;min-height:0;flex-direction:column}#serial-log{flex:1;min-height:0;overflow:auto;margin:0;padding:14px;color:#ddd;white-space:pre-wrap;overflow-wrap:anywhere}
-#serial-input{padding:11px 13px;background:#111;border:0;border-top:1px solid #3c3c3c;outline:none}
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));align-items:start;gap:8px}
-.group{min-width:0;border:1px solid #3d3d3d;border-radius:3px;background:#111;overflow:hidden}
-.group>summary{list-style:none;user-select:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:650;padding:12px 13px;gap:8px}
-.group>summary::-webkit-details-marker{display:none}.group>summary:after{content:'+';font-size:15px;font-weight:400;color:#aaa;line-height:1}.group[open]>summary{border-bottom:1px solid #343434}.group[open]>summary:after{content:'−'}
-.group>summary:hover{background:#1d1d1d}.group-body{padding:12px;display:flex;flex-direction:column;gap:9px}
-.group small,.muted{font-size:11px;color:#aaa;overflow-wrap:anywhere}.auto-label{display:flex;align-items:center;gap:7px}.auto-label input{margin:0;accent-color:#aaa}
-.input{width:100%;padding:9px;background:#070707;border:1px solid #444;border-radius:2px;font-size:12px}
-.row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.row>button{flex:1;min-width:max-content}
-a{color:#eee}#asset-url{word-break:break-all}#log{height:90px;overflow:auto;padding:8px 10px;margin:0;white-space:pre-wrap;background:#111;border:1px solid #333;color:#bdbdbd;font-size:11px}
-footer{color:#888;font-size:11px;padding:0 2px 6px}
-#paste-panel{position:fixed;z-index:99;width:min(400px,calc(100vw - 22px));padding:10px;background:#161616;border:1px solid #777;box-shadow:0 12px 30px #000b}
-#paste-panel[hidden]{display:none}#paste-text{display:block;width:100%;resize:vertical;min-height:70px;padding:9px;background:#080808;color:#eee;border:1px solid #555;outline:none;margin-bottom:9px}
-@media(max-width:760px){header{padding:10px}main{padding:8px}.actions{margin-left:0}.controls{grid-template-columns:1fr 1fr}}
-@media(max-width:470px){.controls{grid-template-columns:1fr}.shell{min-height:340px}}
+:root{font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;background:#090909;color:#eaeaea;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;flex-direction:column}button,input,textarea,select{font:inherit;color:inherit}button{border:1px solid #474747;border-radius:4px;background:#171717;padding:8px 11px;cursor:pointer}button:hover{border-color:#aaa;background:#262626}button:disabled{opacity:.44;cursor:default}.primary{background:#eee;color:#111;border-color:#eee;font-weight:700}.primary:hover{background:#ddd}.active{background:#eee!important;color:#111!important;border-color:#eee!important}a{color:#dedede}a:hover{color:white}header{display:flex;align-items:center;gap:13px;border-bottom:1px solid #313131;padding:12px 17px;background:#111;flex-wrap:wrap}.logo{font-size:17px;font-weight:800;letter-spacing:.06em}.sub{color:#999;font-size:11px}.grow{flex:1}.top-actions{display:flex;flex-wrap:wrap;gap:7px}main{flex:1;min-height:0;padding:12px 15px;display:flex;flex-direction:column;gap:9px}.status{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#aaa;font-size:12px}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:#777}.dot.running{background:#59d98a}.dot.fail{background:#f07878}.progress{height:3px;background:#292929;overflow:hidden}.progress div{height:100%;width:0;background:#58d787;transition:width .18s}.shell{background:#000;border:1px solid #3b3b3b;border-radius:4px;display:flex;flex:1;flex-direction:column;min-height:380px;overflow:hidden}.shell-head{padding:7px 11px;background:#141414;border-bottom:1px solid #333;display:flex;align-items:center;gap:9px;flex-wrap:wrap}.shell-head span{color:#999;font-size:11px}#terminal{height:100%;min-height:340px;width:100%;padding:10px;overflow:hidden}#terminal .xterm{height:100%}.shell-body{flex:1;min-height:340px;position:relative}.empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#aaa;gap:9px;padding:20px;background:#090909}.empty strong{color:#f0f0f0;font-weight:600}.empty[hidden]{display:none}.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:9px;align-items:start}.group{border:1px solid #393939;border-radius:4px;background:#111;overflow:hidden;min-width:0}.group summary{cursor:pointer;padding:11px 12px;list-style:none;font-weight:650;display:flex;align-items:center;justify-content:space-between;user-select:none}.group summary::-webkit-details-marker{display:none}.group summary:after{content:'+';font-size:18px;color:#888;font-weight:400}.group[open] summary:after{content:'−'}.group[open] summary{border-bottom:1px solid #333}.inside{display:flex;flex-direction:column;gap:9px;padding:12px}.line{display:flex;gap:7px;flex-wrap:wrap}.line>*{flex:1}.inside label{color:#bbb;font-size:11px}.inside input,.inside textarea{width:100%;background:#090909;border:1px solid #454545;border-radius:3px;padding:9px;outline:none}.inside textarea{height:105px;resize:vertical;white-space:pre;font:12px/1.6 monospace}.inside input:focus,.inside textarea:focus{border-color:#aaa}.hint{color:#999;font-size:11px;line-height:1.55}.indicator{font-size:11px;color:#aaa;overflow-wrap:anywhere}.indicator.good{color:#59d98a}.indicator.bad{color:#f07878}.hidden-input{display:none}.tag{border:1px solid #444;color:#aaa;border-radius:3px;padding:2px 6px;font-size:10px}footer{display:flex;flex-wrap:wrap;gap:10px 24px;color:#888;font-size:11px;padding:0 3px}.log{white-space:pre-wrap;max-height:115px;overflow:auto;word-break:break-word;color:#aaa;background:#0a0a0a;border:1px solid #333;border-radius:3px;padding:9px;margin:0;font:11px/1.5 monospace}.mark{color:#59d98a}@media(max-width:600px){main{padding:8px}.shell{min-height:320px}#terminal{min-height:290px}header{padding:9px}.sub{display:none}.controls{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<header>
-<strong class="brand">BOX</strong>
-<div class="actions"><button class="primary" id="boot">Boot Alpine</button><button disabled="" id="pause">Pause</button><button id="fullscreen">Fullscreen</button><button disabled="" id="save">Save VM state</button><button id="load-state">Restore state</button></div>
-</header>
+<header><div class="logo">BOX</div><span class="sub">QEMU Wasm / Alpine x86_64</span><div class="grow"></div><nav class="top-actions"><button id="boot" class="primary">Boot x86_64</button><button id="reboot" disabled>Restart VM</button><button id="paste">Paste</button><button id="full">Fullscreen</button></nav></header>
 <main>
-<div class="statusbar"><span><span class="led" id="led"></span><span id="status">Checking Alpine asset…</span></span><span id="transfer"></span></div>
-<div id="progressbar"><div id="progress"></div></div>
-<section class="shell"><div class="shellbar"><div class="tabs"><button class="tab active" id="vga-tab">VM display</button><button class="tab" id="serial-tab">Serial console</button></div><button id="paste-button" title="Paste clipboard into the active terminal">Paste</button></div>
-<div id="vmviewport"><div id="screen_container" tabindex="0"><div></div><canvas></canvas></div></div>
-<div id="serial-view"><pre id="serial-log"></pre><input autocomplete="off" id="serial-input" placeholder="Serial ttyS0 input (if guest console enabled)" spellcheck="false"/></div>
+<div class="status"><div><span class="dot" id="dot"></span><span id="state">Ready to boot</span></div><div id="detail">x86_64 · browser-hosted · no remote VM</div></div>
+<div class="progress"><div id="bar"></div></div>
+<section class="shell" id="shell"><div class="shell-head"><strong>Linux console</strong><span>Click to type · Ctrl+Shift+V or right-click to paste</span><div class="grow"></div><button id="login">Login root</button><button id="clear">Clear view</button></div>
+<div class="shell-body" id="shellbody"><div id="terminal"></div><div class="empty" id="overlay"><strong>Alpine Linux (x86_64)</strong><div>Native 64-bit Linux instruction set, emulated inside WebAssembly.</div><div class="hint">Press Boot x86_64 to start.</div></div></div></section>
+<section class="controls">
+<details class="group"><summary>Packages / developer tools</summary><div class="inside">
+ <div class="line"><button id="verify">Check Node + npm</button><button id="install">Install Node + npm</button></div>
+ <div class="line"><button id="devtools">Install dev tools</button><button id="nettest">Network diagnostics</button></div>
+ <div class="hint">Upstream Alpine guest may not have Node/npm preinstalled. Browser Fetch-proxy networking is subject to CORS; APK installs may fail unless packages are included in a rebuilt disk image.</div>
+ <div class="indicator" id="package-state">Waiting for Linux.</div>
+</div></details>
+<details class="group"><summary>Commands / clipboard</summary><div class="inside">
+ <label for="command">Shell command</label><textarea id="command" spellcheck="false" placeholder="uname -m&#10;node -v&#10;npm -v"></textarea>
+ <div class="line"><button id="send">Run commands</button><button id="copy-command">Copy text</button></div>
+ <div class="hint">Commands use the active terminal, not a synthetic console-output detector. Do not send commands during boot or while a program is waiting for input.</div>
+</div></details>
+<details class="group"><summary>Files / shell scripts</summary><div class="inside">
+ <div class="line"><button id="choose-file">Upload file to shared folder</button><input type="file" id="file" class="hidden-input" multiple></div>
+ <div class="indicator" id="file-status">Files are staged in the QEMU 9p host share; mount it in Linux first.</div>
+ <div class="line"><button id="mount">Mount shared folder</button><button id="listfiles">List shared files</button></div>
+ <label for="script">Shell script</label><textarea id="script" spellcheck="false" placeholder="#!/bin/sh&#10;uname -m&#10;node -v"></textarea>
+ <div class="line"><button id="stage-script">Stage script</button><button id="run-script">Stage + run script</button><button id="save-script">Download script</button></div>
+ <div class="hint">The root filesystem in the upstream demo is an ephemeral overlay. Export work you need to keep. Uploaded scripts are not executed without an explicit click.</div>
+</div></details>
+<details class="group"><summary>Environment / networking</summary><div class="inside">
+ <div><span class="tag">QEMU x86_64</span> <span class="tag">512 MiB RAM</span> <span class="tag">VirtIO</span></div>
+ <button id="network">Show Linux network configuration</button>
+ <button id="asset-test">Check QEMU assets</button>
+ <div class="indicator" id="assets-status">Assets are loaded from the same origin at ./runtime/.</div>
+ <div class="hint">Requires cross-origin isolation (COOP/COEP) for Wasm threads and a same-origin network worker. GitHub Pages deployment workflow handles these files automatically. Browser Fetch networking cannot bypass CORS.</div>
+ <a target="_blank" rel="noopener noreferrer" href="https://ktock.github.io/qemu-wasm-demo/alpine-x86_64.html">Open upstream working demo ↗</a>
+</div></details>
+<details class="group"><summary>Diagnostics</summary><div class="inside"><pre class="log" id="log">Awaiting boot.</pre><div class="line"><button id="copy-log">Copy diagnostics</button><button id="reset-settings">Clear saved script</button></div><div class="hint">A deployment needs index.html plus QEMU runtime assets and coi-serviceworker.js, provisioned by the included GitHub Pages workflow. The HTML contains the application, not gigabytes of compiled emulator data.</div></div></details>
 </section>
-<div class="controls">
-<details class="group"><summary>Boot source</summary><div class="group-body"><div class="row"><label class="muted"><input id="bootdisk" type="checkbox"/> Boot installed disk first</label><label class="muted"><input checked="" id="use-disk" type="checkbox"/> Attach writable disk</label></div>
-<div class="row"><button id="reset-iso">Refresh ISO cache</button><button id="source-link">GitHub image URL ↗</button></div>
-<small id="asset-url">Discovering GitHub repository…</small>
-<small>Initial load downloads the ISO from the separate <code>linux-assets</code> branch. Subsequent loads use browser IndexedDB cache. No ISO needs to be committed on your Pages branch.</small>
-</div></details>
-<details class="group"><summary>Networking</summary><div class="group-body"><label class="muted auto-label"><input checked="" id="auto-setup" type="checkbox"/> Auto-provision Alpine, Node/npm, bash, sudo and Git</label><label class="muted">v86 network relay (HTTPS-compatible WebSocket)</label><input class="input" id="relay" placeholder="wisps://relay.example.org/" spellcheck="false" value="wss://relay.widgetry.org/"/>
-<div class="row"><button id="guest-network">Configure DHCP</button><button id="guest-test">Inspect network</button></div><small>Guest NIC is VirtIO. Relay must actually support outbound networking; a public relay is not guaranteed. Settings apply when rebooted.</small>
-</div></details>
-<details class="group"><summary>Guest tools / disk</summary><div class="group-body"><div class="row"><button id="guest-apk">Provision / retry setup</button><button id="guest-install">Alpine disk installer</button></div>
-<small id="provision-status" role="status" aria-live="polite">Provisioning starts automatically after the live Alpine root shell appears.</small>
-<div class="row"><button id="save-disk">Save disk to browser</button><button id="download-disk">Export disk</button><button id="import-disk">Import disk</button></div>
-<small>Installed tools include bash, sudo, curl, Git, Node and npm (when the guest can reach Alpine package mirrors). Root does not need sudo. Live ISO changes are temporary until you install to the virtual disk. Shut down before saving the disk.</small>
-</div></details>
-</div>
-<div class="controls">
-<details class="group"><summary>Shell scripts / files</summary><div class="group-body">
-<input class="input" id="script-file" type="file" accept=".sh,.bash,.txt,text/plain,application/x-sh" aria-label="Select a shell script"/>
-<div class="row"><button id="stage-script">Stage script in Linux</button><button id="run-script" disabled>Run script</button></div>
-<small id="script-status">Select a local .sh file. Stage it in /root/box-scripts, review it, then run with /bin/sh or bash. The script runs inside the VM as root. 9p transfer is preferred; a slower keyboard/base64 fallback is available.</small>
-</div></details>
-<details class="group"><summary>Agent workspace</summary><div class="group-body">
-<div class="row"><button id="stage-agent">Stage agent.mjs over 9p</button><button id="get-agent">Download agent.mjs</button></div>
-<small>The guest can mount the shared files with <code>mkdir -p /mnt/host; mount -t 9p -o trans=virtio,version=9p2000.L host9p /mnt/host</code>. The starter requires Node/npm and outbound HTTPS via a working relay. It grants shell execution to the selected model.</small>
-</div></details>
-<details class="group"><summary>Offline export</summary><div class="group-body">
-<div class="row"><button id="bundle">Export self-contained Alpine HTML</button></div>
-<small>Includes the Alpine ISO, WASM, firmware and JavaScript in one large HTML file. VM disk image is not included; export the disk separately. Online npm/API requests still need an external network relay.</small>
-</div></details>
-</div>
-<pre id="log"></pre>
-<footer>Alpine x86 · Browser VM · <a href="https://github.com/copy/v86" rel="noopener" target="_blank">v86</a></footer>
+<footer><span>Open-source QEMU Wasm integration</span><span><a href="https://github.com/ktock/qemu-wasm" target="_blank" rel="noopener">QEMU Wasm</a> · <a href="https://github.com/ktock/qemu-wasm-demo" target="_blank" rel="noopener">Upstream demo</a></span><span>Browser guest filesystem is ephemeral unless independently persisted.</span></footer>
 </main>
-<input accept=".v86state,application/octet-stream" hidden="" id="state-file" type="file"/><input accept=".img,.raw,application/octet-stream" hidden="" id="disk-file" type="file"/>
-<div aria-label="Paste into Linux terminal" hidden="" id="paste-panel" role="dialog"><textarea id="paste-text" placeholder="Press Ctrl+V here, then Send" rows="4"></textarea><div class="row"><button id="paste-send">Send to VM</button><button id="paste-cancel">Cancel</button></div></div><script id="v86-runtime" src="https://cdn.jsdelivr.net/npm/v86@0.5.469/build/libv86.js"></script>
-<script id="app-code">
-(() => {
- "use strict";
- // Binary never sits beside index.html. GitHub Actions publishes it to the isolated linux-assets branch.
- const VERSION="3.24.2", IMAGE=`alpine-virt-${VERSION}-x86.iso`, ASSET_BRANCH="linux-assets";
- const packed=window.__OFFLINE_BOX__||null;
- function decode64(s){const raw=atob(s),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes.buffer;}
- function encode64(buffer){const src=new Uint8Array(buffer);let s="";for(let i=0;i<src.length;i+=8192)s+=String.fromCharCode(...src.subarray(i,i+8192));return btoa(s);}
- const RUNTIME={ wasm:"https://cdn.jsdelivr.net/npm/v86@0.5.469/build/v86.wasm", bios:"https://raw.githubusercontent.com/copy/v86/master/bios/seabios.bin", vga:"https://raw.githubusercontent.com/copy/v86/master/bios/vgabios.bin" };
- const $=id=>document.getElementById(id);
- function repository(){
-   const params=new URLSearchParams(location.search), forced=params.get("repo");
-   if(forced && /^[a-z\d_.-]+\/[a-z\d_.-]+$/i.test(forced)) return forced;
-   const match=location.hostname.match(/^([a-z\d-]+)\.github\.io$/i);
-   if(match){const project=location.pathname.split('/').filter(Boolean)[0];if(project)return `${match[1]}/${project}`;}
-   return "robit-man/box";
- }
- const repo=repository();
- const assetURL=`https://raw.githubusercontent.com/${repo}/${ASSET_BRANCH}/${IMAGE}`;
- const CACHE_KEY=`iso:${repo}:${ASSET_BRANCH}:${IMAGE}`, DISK_KEY=`disk:${repo}`;
- $("asset-url").textContent=assetURL;
- let vm=null, iso=null, disk=null, paused=false, starting=false, running=false, serial="", renderTimer=null;
- let bootEpoch=0, setupRunning=false, setupComplete=false, pasteSerial=false, guestCommandBusy=false, scriptRecord=null;
- const APK_MAIN="https://dl-cdn.alpinelinux.org/alpine/v3.24/main";
- const APK_COMMUNITY="https://dl-cdn.alpinelinux.org/alpine/v3.24/community";
- const APK_REPOS=`-X ${APK_MAIN} -X ${APK_COMMUNITY}`;
- const APK_REPO_SETUP=`printf '%s\\n' '${APK_MAIN}' '${APK_COMMUNITY}' > /etc/apk/repositories`;
- function provisionStatus(text,state="idle"){const el=$("provision-status");el.textContent=text;el.dataset.state=state;$("guest-apk").disabled=setupRunning;}
- function message(s,level="info"){$("status").textContent=s;$("led").className="led"+(level==="ok"?" ok":level==="error"?" fail":"");}
- function log(s){$("log").textContent=`[${new Date().toLocaleTimeString()}] ${s}\n`+$("log").textContent.slice(0,12000);}
- function fail(e){message(e?.message||String(e),"error");log("ERROR: "+(e?.stack||e));console.error(e);}
- function buttons(){ $("boot").disabled=starting; $("pause").disabled=!vm||!running; $("save").disabled=!vm||!running; }
- function saveFile(name,data){const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000);}
- function db(){return new Promise((resolve,reject)=>{const req=indexedDB.open("browser-linux-alpine",2);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains("files"))req.result.createObjectStore("files")};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
- async function dbOp(type,key,val){let database;try{database=await db();return await new Promise((resolve,reject)=>{const tx=database.transaction("files",type==="get"?"readonly":"readwrite"),store=tx.objectStore("files"),req=type==="get"?store.get(key):type==="delete"?store.delete(key):store.put(val,key);req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}finally{database?.close();}}
- async function downloadISO(){
-   if(iso)return iso;
-   if(packed?.iso){iso=decode64(packed.iso);if(!validISO(iso))throw new Error("Embedded ISO is corrupt");message("Offline Alpine ISO ready","ok");return iso;}
-   try{const cache=await dbOp("get",CACHE_KEY);if(cache instanceof ArrayBuffer&&validISO(cache)){iso=cache;message("Alpine ISO ready (cached)","ok");return iso;}}catch(e){log("Cache read unavailable: "+e.message);}
-   message("Downloading Alpine ISO from GitHub…");log("Fetching "+assetURL);
-   let response;
-   try{response=await fetch(assetURL,{mode:"cors",redirect:"follow",cache:"no-cache"});}catch(e){throw new Error("GitHub ISO fetch blocked. Check CORS/network and verify linux-assets branch: "+e.message);}
-   if(!response.ok)throw new Error(`GitHub image HTTP ${response.status}. Publish the linux-assets branch using the included GitHub Actions workflow.`);
-   const total=Number(response.headers.get("content-length"))||51380224;
-   let data;
-   if(response.body?.getReader){
-     const reader=response.body.getReader(),pieces=[];let loaded=0;
-     while(true){const {done,value}=await reader.read();if(done)break;pieces.push(value);loaded+=value.byteLength;$("transfer").textContent=`${(loaded/1048576).toFixed(1)} MiB / ${(total/1048576).toFixed(1)} MiB`;$("progress").style.width=Math.min(100,loaded/total*100)+"%";}
-     data=new Uint8Array(loaded);let off=0;for(const part of pieces){data.set(part,off);off+=part.length;}iso=data.buffer;
-   }else iso=await response.arrayBuffer();
-   if(!validISO(iso)){iso=null;throw new Error("GitHub response was not a valid ISO9660 image (expected CD001 signature).");}
-   try{await dbOp("put",CACHE_KEY,iso);log("ISO cached in IndexedDB");}catch(e){log("ISO cache unavailable (VM can still boot): "+e.message);}
-   $("transfer").textContent=`${(iso.byteLength/1048576).toFixed(1)} MiB downloaded`;
-   message("Alpine ISO ready","ok");return iso;
- }
- function validISO(buffer){if(!(buffer instanceof ArrayBuffer)||buffer.byteLength<40000)return false; const b=new Uint8Array(buffer,32769,5);return String.fromCharCode(...b)==="CD001";}
- async function getDisk(){if(disk)return disk;try{const data=await dbOp("get",DISK_KEY);if(data instanceof ArrayBuffer&&data.byteLength>=8*1024*1024){disk=data;log(`Restored ${(disk.byteLength/1048576).toFixed(0)} MiB hard disk from browser`);return disk;}}catch(e){log("Disk cache read unavailable: "+e.message);}disk=new ArrayBuffer(512*1024*1024);log("Created new blank 512 MiB disk. Install Alpine to it with setup-alpine.");return disk;}
- function screen(){ $("screen_container").innerHTML='<div style="white-space:pre;font:14px/14px monospace"></div><canvas style="display:none;image-rendering:pixelated"></canvas>';$("serial-log").textContent="";serial="";}
- async function boot(){if(starting)return;starting=true;const epoch=++bootEpoch;setupRunning=false;setupComplete=false;provisionStatus("Waiting for Alpine to boot…");buttons();
-   scriptRecord=null;$("run-script").disabled=true;$("script-status").textContent="Select a .sh file to stage into this VM.";
-   try{
-     if(typeof V86!=="function")throw new Error("v86 runtime script failed to load from jsDelivr");
-     const image=await downloadISO(); if(vm){await vm.stop();await vm.destroy();vm=null;running=false;}
-     screen();if($("use-disk").checked)await getDisk();
-     const relay=$("relay").value.trim(); if(!/^(wss?:\/\/|wisps?:\/\/|fetch$|inbrowser$)/i.test(relay))throw new Error("Invalid relay: use wss://, wisps://, fetch or inbrowser");
-     const options={wasm_path:RUNTIME.wasm,memory_size:512*1024*1024,vga_memory_size:16*1024*1024,screen_container:$("screen_container"),bios:packed?.bios?{buffer:decode64(packed.bios)}:{url:RUNTIME.bios},vga_bios:packed?.vga?{buffer:decode64(packed.vga)}:{url:RUNTIME.vga},
-       filesystem:{},cdrom:{buffer:image}, autostart:true, disable_speaker:true,net_device:{type:"virtio",relay_url:relay},boot_order:$("bootdisk").checked?0x132:0x213};
-     if(packed?.wasm){delete options.wasm_path;options.wasm_fn=imports=>WebAssembly.instantiate(decode64(packed.wasm),imports).then(result=>result.instance.exports);}
-     if($("use-disk").checked) options.hda={buffer:disk};
-     message("Starting Alpine Linux…");vm=new V86(options);
-     vm.add_listener("emulator-ready",()=>{message("Emulator ready — booting Alpine","ok")});
-     vm.add_listener("emulator-started",()=>{running=true;paused=false;$("pause").textContent="Pause";buttons();message("Linux running","ok");if($("auto-setup").checked)automaticSetup(vm,epoch);});
-     vm.add_listener("emulator-stopped",()=>{running=false;buttons();message("VM stopped")});
-     vm.add_listener("download-error",e=>fail(new Error("Emulator dependency failed: "+e.file_name)));
-     vm.add_listener("serial0-output-byte",b=>{serial+=String.fromCharCode(b);if(serial.length>150000)serial=serial.slice(-100000);if(!renderTimer)renderTimer=setTimeout(()=>{const p=$("serial-log");p.textContent=serial;p.scrollTop=p.scrollHeight;renderTimer=null;},60);});
-     log(`Started Alpine ${VERSION} x86, ${$("use-disk").checked?"512 MiB disk":"no disk"}, relay ${relay}`);
-   }catch(e){fail(e);}finally{starting=false;buttons();}
- }
- function typeGuest(text){if(!vm||!running){log("Boot Linux first");return;}vm.keyboard_send_text(text+"\n");log("Sent to guest shell: "+text.slice(0,200));}
- // Alpine's live CD has only /media/cdrom/apks by default. Provision it after the root shell is ready,
- // issuing one command at a time and waiting for an explicit VGA output marker from the guest.
- function readScreen(guest){
-   try{
-     const rows=guest?.screen_adapter?.get_text_screen?.();
-     if(Array.isArray(rows)&&rows.some(row=>String(row).trim()))return rows.join("\n");
-     if(typeof rows==="string"&&rows.trim())return rows;
-   }catch(e){}
-   const display=$("screen_container").firstElementChild;
-   if(!display)return "";
-   if(display.children.length>1)return Array.from(display.children,c=>c.textContent).join("\n");
-   return display.innerText||display.textContent||"";
- }
- const SHELL_PROMPT=/(?:^|\n)\s*[a-z0-9_.-]+:[^\n#]{0,72}#\s*$/mi;
- const LOGIN_PROMPT=/(?:^|\n)[^\n]{0,72}login:\s*$/mi;
- const PASSWORD_PROMPT=/(?:^|\n)[^\n]{0,72}password:\s*$/mi;
- function delay(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
- async function awaitScreen(guest,epoch,regex,timeout=150000){
-   const start=Date.now();
-   while(Date.now()-start<timeout){
-     if(guest!==vm||epoch!==bootEpoch)throw new Error("Boot session changed");
-     if(!running){await delay(300);continue;}
-     const screen=readScreen(guest),match=screen.match(regex);
-     if(match)return match;
-     await delay(250);
-   }
-   throw new Error("Timed out waiting for Alpine console output (open VM display to check boot/login)");
- }
- let commandIndex=0;
- async function runChecked(guest,epoch,command,label,timeout=150000){
-   const marker=`BOX${epoch}STEP${++commandIndex}`;
-   message(label,"ok");log(label);
-   // Avoid heredocs, guest-side multiline input, and guessing when apk has finished.
-   // The marker is printed only after the command exits. Its numeric result isn't in echoed input.
-   guest.keyboard_send_text(command+`; box_rc=$?; printf '\\n${marker}:%s\\n' "$box_rc"`+"\n");
-   const found=await awaitScreen(guest,epoch,new RegExp(`(?:^|\\n)\\s*${marker}:([0-9]+)(?:\\s|$)`,"m"),timeout);
-   const code=Number(found[1]);
-   if(code!==0)throw new Error(label+` failed (exit ${code}). Check network relay, DNS and the Alpine terminal.`);
-   log(label+" complete");
- }
- async function automaticSetup(guest=vm,epoch=bootEpoch,manual=false){
-   if(!guest||!running){provisionStatus("Boot Alpine first, then select Provision / retry setup.","error");return;}
-   if(setupRunning){log("Provisioning already in progress");return;}
-   if(setupComplete&&!manual)return;
-   setupRunning=true;
-   provisionStatus("Waiting for Alpine root shell…","running");
-   try{
-     message("Waiting for Alpine root shell…","ok");
-     let snapshot=readScreen(guest);
-     if(!SHELL_PROMPT.test(snapshot)){
-       if(!LOGIN_PROMPT.test(snapshot)){
-         await awaitScreen(guest,epoch,/(?:login:\s*$|[a-z0-9_.-]+:[^\n#]{0,72}#\s*$)/mi,160000);
-         snapshot=readScreen(guest);
-       }
-       if(LOGIN_PROMPT.test(snapshot)){
-         if($("bootdisk").checked){
-           provisionStatus("Log into the installed Linux system as root to continue.","running");
-           log("Installed Linux may require a password. Waiting for you to log in.");
-         }else{
-           log("Signing in to Alpine live environment as root (no password)");
-           guest.keyboard_send_text("root\n");
-         }
-       }
-       await awaitScreen(guest,epoch,SHELL_PROMPT,180000);
-     }
-     if(guest!==vm||epoch!==bootEpoch) return;
-     // The emulated Ethernet interface generally gets DHCP through the configured relay.
-     // Do not reset a working route. Fail clearly if no default route exists.
-     provisionStatus("Checking Ethernet and DHCP…","running");
-     await runChecked(guest,epoch,"ifconfig eth0 up; if ! route -n | grep -q '^0.0.0.0 '; then udhcpc -n -q -i eth0; fi; route -n | grep -q '^0.0.0.0 '","Checking Ethernet and DHCP",55000);
-     provisionStatus("Writing Alpine main/community repositories…","running");
-     await runChecked(guest,epoch,APK_REPO_SETUP+"; test -s /etc/apk/repositories && grep -qF '"+APK_MAIN+"' /etc/apk/repositories && grep -qF '"+APK_COMMUNITY+"' /etc/apk/repositories","Configuring Alpine repositories",30000);
-     // Passing explicit -X repositories ensures the live ISO's /media/cdrom/apks-only
-     // configuration cannot silently hide nodejs/npm. --no-cache fetches fresh indexes.
-     provisionStatus("Fetching Alpine online package indexes…","running");
-     await runChecked(guest,epoch,`apk update ${APK_REPOS}`,"Refreshing online Alpine repositories",180000);
-     provisionStatus("Installing Node.js and npm…","running");
-     await runChecked(guest,epoch,`apk add --no-cache ${APK_REPOS} nodejs npm`,"Installing Node.js and npm",360000);
-     await runChecked(guest,epoch,"command -v node >/dev/null && command -v npm >/dev/null && node --version && npm --version","Verifying Node.js and npm",45000);
-     provisionStatus("Installing developer tools…","running");
-     await runChecked(guest,epoch,`apk add --no-cache ${APK_REPOS} bash sudo git curl ca-certificates iproute2 coreutils tar gzip unzip`,"Installing Bash, sudo, Git and utilities",360000);
-     await runChecked(guest,epoch,"command -v bash >/dev/null && command -v sudo >/dev/null && command -v git >/dev/null && command -v node >/dev/null && command -v npm >/dev/null","Verifying development tools",45000);
-     setupComplete=true;
-     provisionStatus("Ready — Node.js, npm, Bash, sudo and Git verified.","success");
-     message("Linux ready · Node.js and npm verified","ok");
-     log("Alpine packages installed and verified. Live-ISO changes are temporary; install Alpine onto the virtual disk for persistence.");
-   }catch(e){
-     if(guest!==vm||epoch!==bootEpoch)return;
-     setupComplete=false;
-     const reason=e?.message||String(e);
-     const tail=readScreen(guest).split("\n").slice(-8).join(" | ").trim();
-     log("Provision failed: "+reason+(tail?" | Console: "+tail.slice(-700):""));
-     provisionStatus("Failed: "+reason+" — click Provision / retry setup.","error");
-     message("Provision failed — open Guest tools / disk to retry","error");
-   }finally{
-     if(guest===vm&&epoch===bootEpoch){setupRunning=false;$("guest-apk").disabled=false;}
-   }
- }
- // Clipboard handling: right click inside VGA/serial reads the clipboard on secure origins.
- // Firefox may deny readText(), in which case show an input with native Ctrl+V support.
- function activeSerial(){return $("serial-view").style.display==="flex";}
- function hidePastePanel(){$("paste-panel").hidden=true;$('paste-text').value='';}
- function manualPaste(x=24,y=100){
-   const box=$("paste-panel");box.hidden=false;
-   box.style.left=Math.max(8,Math.min(x,innerWidth-410))+"px";
-   box.style.top=Math.max(8,Math.min(y,innerHeight-180))+"px";
-   $("paste-text").focus();
-   log("Clipboard permission unavailable: press Ctrl+V in the paste field, then Send to VM");
- }
- async function sendPastedText(text,toSerial=activeSerial()){
-   if(!vm||!running)throw new Error("Boot the Linux VM before pasting");
-   if(typeof text!=="string"||!text.length)return;
-   if(text.length>250000)throw new Error("Clipboard content too long (250 KB limit)");
-   // Pause between line breaks to avoid overrunning the guest tty input buffer.
-   const rows=text.replace(/\r\n?/g,"\n").split("\n");
-   const origin=vm;
-   for(let i=0;i<rows.length;i++){
-     if(origin!==vm||!running)break;
-     if(rows[i])toSerial?origin.serial0_send(rows[i]):origin.keyboard_send_text(rows[i]);
-     if(i<rows.length-1){toSerial?origin.serial0_send("\n"):origin.keyboard_send_text("\n");await delay(220);}
-   }
-   log(`Pasted ${text.length} characters into ${toSerial?"serial":"VGA"} terminal`);
- }
- async function pasteClipboard(x=24,y=100,toSerial=activeSerial()){
-   pasteSerial=toSerial;
-   try{
-     if(!navigator.clipboard?.readText)throw new Error("Browser clipboard API unavailable");
-     const text=await navigator.clipboard.readText();
-     if(!text)throw new Error("Clipboard is empty");
-     await sendPastedText(text,toSerial);
-     hidePastePanel();
-   }catch(e){log("Clipboard read not permitted: "+e.message);manualPaste(x,y);}
- }
- for(const id of ["screen_container","serial-view"]){
-   $(id).addEventListener("contextmenu",e=>{e.preventDefault();pasteClipboard(e.clientX,e.clientY,id==="serial-view");});
- }
- $("paste-button").onclick=e=>pasteClipboard(e.clientX||24,e.clientY||100);
- $("paste-send").onclick=async()=>{try{await sendPastedText($("paste-text").value,pasteSerial);hidePastePanel();}catch(e){fail(e);}};
- $("paste-cancel").onclick=hidePastePanel;
- document.addEventListener("keydown",e=>{if(e.key==="Escape")hidePastePanel();});
- document.addEventListener("paste",e=>{
-   if(e.target?.closest?.("#paste-panel, #serial-input, input, textarea"))return;
-   if(e.target?.closest?.("#screen_container,#vmviewport,#serial-view")){
-     const text=e.clipboardData?.getData("text/plain");
-     if(text){e.preventDefault();sendPastedText(text).catch(fail);}
-   }
- },true);
-
- $("boot").onclick=boot;
- $("pause").onclick=async()=>{if(!vm)return;try{if(paused){await vm.run();paused=false;running=true;}else{await vm.stop();paused=true;running=false;}$("pause").textContent=paused?"Resume":"Pause";$("pause").disabled=false;$("save").disabled=false;message(paused?"Paused":"Running",paused?"info":"ok");}catch(e){fail(e);}};
- $("fullscreen").onclick=()=>vm?vm.screen_go_fullscreen():$("vmviewport").requestFullscreen?.();
- $("save").onclick=async()=>{if(!vm)return;try{message("Saving VM state…");saveFile("alpine.v86state",await vm.save_state());message("Snapshot exported","ok");}catch(e){fail(e);}};
- $("load-state").onclick=()=>$("state-file").click();
- $("state-file").onchange=async e=>{const f=e.target.files[0];if(!f||!vm)return;try{await vm.stop();await vm.restore_state(await f.arrayBuffer());await vm.run();message("Snapshot restored","ok");}catch(x){fail(x);}e.target.value="";};
- $("source-link").onclick=()=>window.open(assetURL,"_blank","noopener,noreferrer");
- $("reset-iso").onclick=async()=>{try{await dbOp("delete",CACHE_KEY);iso=null;$("progress").style.width="0";message("Cache cleared; next boot fetches from GitHub");}catch(e){fail(e);}};
- $("guest-network").onclick=()=>typeGuest("ip link set eth0 up 2>/dev/null || ifconfig eth0 up; ip route | grep -q ^default || udhcpc -n -q -i eth0; ip addr show eth0; ip route; cat /etc/resolv.conf");
- $("guest-test").onclick=()=>typeGuest("ifconfig -a; ip route; cat /etc/resolv.conf; nslookup dl-cdn.alpinelinux.org; wget -S -O /dev/null https://registry.npmjs.org/ 2>&1 | head -15");
- $("guest-apk").onclick=()=>automaticSetup(vm,bootEpoch,true);
- $("guest-install").onclick=()=>typeGuest("setup-alpine");
- // Uploads never execute without an explicit click. Avoid shell-escaping uploaded names:
- // every upload uses an internal fixed path, and the guest runs only that staged path.
- function selectedScript(){const f=$("script-file").files?.[0];if(!f)throw new Error("Select a .sh or .bash script first");if(f.size>1024*1024)throw new Error("Maximum script size is 1 MiB");return f;}
- async function scriptShellReady(){
-   if(!vm||!running)throw new Error("Boot Alpine before staging files");
-   if(setupRunning)throw new Error("Wait for automatic setup to finish before staging files");
-   if(guestCommandBusy)throw new Error("Guest file operation already running");
-   const text=readScreen(vm);
-   if(!SHELL_PROMPT.test(text))throw new Error("Log in to the Linux root shell before staging scripts");
- }
- async function stageByKeyboard(bytes,guest,epoch){
-   const b64=encode64(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
-   await runChecked(guest,epoch,"mkdir -p /root/box-scripts; : > /tmp/box-script.b64","Preparing guest script directory",30000);
-   // Single-line chunks avoid heredocs and the tty input overflow that caused the original issue.
-   for(let i=0;i<b64.length;i+=96){
-     const chunk=b64.slice(i,i+96);
-     await runChecked(guest,epoch,`printf '%s' '${chunk}' >> /tmp/box-script.b64`, `Uploading script ${Math.min(i+96,b64.length)}/${b64.length} bytes (base64)`,30000);
-   }
-   await runChecked(guest,epoch,"base64 -d /tmp/box-script.b64 > /root/box-scripts/upload.sh && chmod 700 /root/box-scripts/upload.sh && rm /tmp/box-script.b64","Finishing script transfer",30000);
- }
- async function stageScript(){
-   let guest,epoch;
-   try{
-     await scriptShellReady();const file=selectedScript();guest=vm;epoch=bootEpoch;
-     guestCommandBusy=true;$("stage-script").disabled=true;$("run-script").disabled=true;scriptRecord=null;
-     const bytes=new Uint8Array(await file.arrayBuffer());let via="9p";
-     $("script-status").textContent=`Staging ${file.name} (${bytes.length} bytes)…`;
-     try{
-       await guest.create_file("/upload.sh",bytes);
-       await runChecked(guest,epoch,"mkdir -p /mnt/host /root/box-scripts; modprobe 9pnet_virtio 2>/dev/null || :; (mountpoint -q /mnt/host || mount -t 9p -o trans=virtio,version=9p2000.L host9p /mnt/host); cp /mnt/host/upload.sh /root/box-scripts/upload.sh && chmod 700 /root/box-scripts/upload.sh","Copying script from 9p share",60000);
-     }catch(e){
-       via="keyboard fallback";log("9p unavailable; using chunked base64 transfer: "+e.message);
-       if(bytes.byteLength>32*1024)throw new Error("9p mount failed and script exceeds 32 KiB fallback limit: "+e.message);
-       await stageByKeyboard(bytes,guest,epoch);
-     }
-     if(vm!==guest||bootEpoch!==epoch)throw new Error("Boot session changed during script upload");
-     scriptRecord={name:file.name,interpreter:/\.bash$/i.test(file.name)?"bash":"sh",epoch};
-     $("run-script").disabled=false;
-     $("script-status").textContent=`${file.name} staged via ${via} → /root/box-scripts/upload.sh. Review script contents before running.`;
-     log("Script staged. Run manually with sh /root/box-scripts/upload.sh, or click Run script.");
-   }catch(e){fail(e);$("script-status").textContent="Script transfer failed: "+e.message;}
-   finally{guestCommandBusy=false;$("stage-script").disabled=false;}
- }
- $("stage-script").onclick=stageScript;
- $("script-file").onchange=()=>{scriptRecord=null;$("run-script").disabled=true;$("script-status").textContent="Selected "+($("script-file").files?.[0]?.name||"no file")+". Click Stage script to transfer.";};
- $("run-script").onclick=async()=>{
-   if(!scriptRecord||scriptRecord.epoch!==bootEpoch){fail(new Error("Stage the script again for the current boot"));return;}
-   if(setupRunning||guestCommandBusy){fail(new Error("Guest is busy provisioning or transferring files"));return;}
-   if(!confirm(`Execute ${scriptRecord.name} as root inside Alpine? The script can modify guest files and make outbound connections.`))return;
-   const guest=vm,epoch=bootEpoch;
-   guestCommandBusy=true;$("run-script").disabled=true;
-   try{
-     await runChecked(guest,epoch,`${scriptRecord.interpreter} /root/box-scripts/upload.sh`,"Running uploaded shell script",300000);
-     $("script-status").textContent=`${scriptRecord.name} completed successfully in the VM.`;
-     message("Script completed","ok");
-   }catch(e){fail(e);$("script-status").textContent=`Script failed: ${e.message}`;}
-   finally{guestCommandBusy=false;$("run-script").disabled=false;}
- };
-
- async function snapshotDisk(){if(!vm)throw new Error("Boot Linux first");const hda=vm.disk_images?.hda;if(hda?.get_buffer){return await new Promise((resolve,reject)=>{hda.get_buffer(b=>b?resolve(b):reject(new Error("No disk buffer")));});}if(disk)return disk;throw new Error("No attached disk");}
- async function saveDisk(toBrowser){try{if(!disk)throw new Error("No disk attached");if(vm?.is_running?.())throw new Error("Shut down and pause the guest before saving its disk to prevent corruption");const b=await snapshotDisk();if(toBrowser){await dbOp("put",DISK_KEY,b);message("Hard disk saved to browser","ok");log("Browser disk saved; remains available after refresh");}else saveFile("alpine-disk.img",b);}catch(e){fail(e);}}
- $("save-disk").onclick=()=>saveDisk(true);$("download-disk").onclick=()=>saveDisk(false);
- $("import-disk").onclick=()=>$("disk-file").click();$("disk-file").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(vm?.is_running?.())throw new Error("Stop guest before importing a disk");const b=await f.arrayBuffer();if(b.byteLength<8*1024*1024||b.byteLength%512!==0)throw new Error("Select a raw disk image, minimum 8 MiB, aligned to 512 bytes");disk=b;await dbOp("put",DISK_KEY,disk);message(`Imported ${(b.byteLength/1048576).toFixed(0)} MiB disk; reboot to attach`,"ok");}catch(x){fail(x);}e.target.value="";};
- $("vga-tab").onclick=()=>{ $("vmviewport").style.display="flex";$("serial-view").style.display="none";$("vga-tab").classList.add("active");$("serial-tab").classList.remove("active");$("screen_container").focus();};
- $("serial-tab").onclick=()=>{ $("vmviewport").style.display="none";$("serial-view").style.display="flex";$("serial-tab").classList.add("active");$("vga-tab").classList.remove("active");$("serial-input").focus();};
- $("serial-input").onkeydown=e=>{if(e.key==="Enter"&&vm){e.preventDefault();vm.serial0_send(e.currentTarget.value+"\n");e.currentTarget.value="";}};
- const AGENT_SOURCE = String.raw`#!/usr/bin/env node
-import fs from "node:fs/promises";
-import { execFile } from "node:child_process";
-import { promisify } from "node:util";
-const shell=promisify(execFile);
-const endpoint=process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
-const key=process.env.OPENAI_API_KEY, model=process.env.OPENAI_MODEL || "gpt-4.1-mini";
-const task=process.argv.slice(2).join(" ") || "Inspect the current directory";
-if(!key){ console.error("Missing OPENAI_API_KEY");process.exit(1); }
-const tools=[{type:"function",function:{name:"shell",description:"Run a shell command inside the guest Linux VM",parameters:{type:"object",properties:{command:{type:"string"}},required:["command"]}}},{type:"function",function:{name:"read_file",description:"Read file",parameters:{type:"object",properties:{path:{type:"string"}},required:["path"]}}},{type:"function",function:{name:"write_file",description:"Write file",parameters:{type:"object",properties:{path:{type:"string"},content:{type:"string"}},required:["path","content"]}}}];
-let messages=[{role:"system",content:"You are a coding agent executing inside isolated Linux. Use tools when needed. Do not disclose secrets."},{role:"user",content:task}];
-for(let step=0;step<20;step++){
-  const r=await fetch(endpoint.replace(/\/$/,"")+"/chat/completions",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer "+key},body:JSON.stringify({model,messages,tools,tool_choice:"auto"})});
-  if(!r.ok)throw new Error("API "+r.status+": "+(await r.text()).slice(0,500));
-  const response=await r.json(), msg=response.choices?.[0]?.message;
-  if(!msg)throw new Error("No completion message"); messages.push(msg);
-  if(!msg.tool_calls?.length){console.log(msg.content||"Done");break;}
-  for(const call of msg.tool_calls){let result="";
-    try{const a=JSON.parse(call.function.arguments||"{}");if(call.function.name==="shell"){const r=await shell("/bin/sh",["-c",a.command],{timeout:60000,maxBuffer:1024*1024});result=r.stdout+"\n"+r.stderr;}else if(call.function.name==="read_file")result=await fs.readFile(a.path,"utf8");else if(call.function.name==="write_file"){await fs.writeFile(a.path,a.content,"utf8");result="written";}else result="unknown tool";}catch(e){result="ERROR: "+e.message;}
-    messages.push({role:"tool",tool_call_id:call.id,content:result.slice(0,12000)});
-  }
-}`;
- $("get-agent").onclick=()=>saveFile("agent.mjs",AGENT_SOURCE);
- $("stage-agent").onclick=async()=>{try{if(!vm)throw new Error("Boot VM first");await vm.create_file("/agent.mjs",new TextEncoder().encode(AGENT_SOURCE));message("agent.mjs staged in 9p share","ok");}catch(e){fail(e);}};
- $("bundle").onclick=async()=>{if(starting)return;const btn=$("bundle");btn.disabled=true;
-   try{
-     message("Bundling offline Alpine HTML…");const encoded={iso:encode64(await downloadISO())};
-     for(const name of ["bios","vga","wasm"]){if(packed?.[name])encoded[name]=packed[name];else{const res=await fetch(RUNTIME[name],{mode:"cors"});if(!res.ok)throw new Error(`Cannot bundle ${name}: HTTP ${res.status}`);encoded[name]=encode64(await res.arrayBuffer());}log(`Bundled ${name}`);}
-     const runtimeJS=packed?null:await (async()=>{const res=await fetch("https://cdn.jsdelivr.net/npm/v86@0.5.469/build/libv86.js",{mode:"cors"});if(!res.ok)throw new Error("Cannot download emulator JavaScript");return res.text();})();
-     const clone=document.documentElement.cloneNode(true);
-     clone.querySelector("#screen_container").innerHTML='<div style="white-space:pre;font:14px/14px monospace"></div><canvas style="display:none"></canvas>';
-     clone.querySelector("#serial-log").textContent="";clone.querySelector("#status").textContent="Initializing offline Alpine VM";clone.querySelector("#log").textContent="";
-     clone.querySelector("#asset-url").textContent="Alpine ISO embedded in HTML";clone.querySelector("#paste-panel").setAttribute("hidden","");clone.querySelector("#paste-text").textContent="";
-     const old=clone.querySelector("#offline-assets");if(old)old.remove();
-     const script=clone.querySelector("#v86-runtime");if(runtimeJS!==null){script.removeAttribute("src");script.textContent=runtimeJS.replace(/<\/script/gi,"<\\/script");}
-     const assets=document.createElement("script");assets.id="offline-assets";assets.textContent="window.__OFFLINE_BOX__="+JSON.stringify(encoded)+";";clone.querySelector("#app-code").before(assets);
-     const html="<!doctype html>\n"+clone.outerHTML;saveFile("box-alpine-offline.html",new Blob([html],{type:"text/html"}));message("Standalone HTML exported","ok");
-   }catch(e){fail(e);}finally{btn.disabled=false;}
- };
- $("relay").addEventListener("change",()=>log("Relay updated; reboot to apply"));
- $("auto-setup").addEventListener("change",()=>{if($("auto-setup").checked&&!setupRunning&&running)automaticSetup(vm,bootEpoch);});
- window.addEventListener("error",e=>{if(e.target?.tagName==="SCRIPT"&&e.target.src.includes("libv86"))fail(new Error("Could not fetch v86 library"));},true);
- // Download ISO automatically (before boot) so missing GitHub asset yields actionable error immediately.
- downloadISO().then(()=>{if(!vm)boot();}).catch(fail);
-})();
+<script>
+/* Registers the same-origin service worker shipped by the deployment workflow.
+   A normal GitHub Pages HTML response does NOT supply COOP/COEP headers. */
+if (location.protocol === 'https:' && !crossOriginIsolated && 'serviceWorker' in navigator) {
+  navigator.serviceWorker.register(new URL('coi-serviceworker.js', location.href).href,{scope:'./'})
+    .then(r=>{if(!navigator.serviceWorker.controller){navigator.serviceWorker.ready.then(()=>location.reload());}})
+    .catch(err=>console.warn('COI worker unavailable:',err));
+}
+</script>
+<script type="module">
+const $=id=>document.getElementById(id);
+const BASE=new URL('./runtime/',location.href).href;
+const FILES=['out.js','qemu-system-x86_64.wasm','qemu-system-x86_64.worker.js','load-rootfs.js','load-rootfs.data','load-kernel.js','load-kernel.data','load-initramfs.js','load-initramfs.data','load-rom.js','load-rom.data','dist/stack.js','dist/stack-worker.js','c2w-net-proxy.wasm.gzip'];
+const PACKAGE_COMMAND='apk add --no-cache -X https://dl-cdn.alpinelinux.org/alpine/v3.21/main -X https://dl-cdn.alpinelinux.org/alpine/v3.21/community nodejs npm';
+let term,pty,wasmModule=null,booting=false,started=false,loggedIn=false,networkReady=false,logs=[],lastUpload=[],mounted=false,developerImage=false;
+function trace(message){const s=new Date().toLocaleTimeString('en-GB')+'  '+message;logs.push(s);if(logs.length>150)logs.shift();$('log').textContent=logs.join('\n');console.log('[BOX]',message)}
+function status(message,kind='idle',detail){$('state').textContent=message;$('dot').className='dot'+(kind==='running'?' running':kind==='error'?' fail':'');if(detail!==undefined)$('detail').textContent=detail;trace(message)}
+function progress(n){$('bar').style.width=Math.max(0,Math.min(100,n))+'%'}
+function buttons(on){$('boot').disabled=on;$('reboot').disabled=!on}
+function shQuote(x){return "'"+String(x).replace(/'/g,"'\\''")+"'"}
+function errMessage(e){return e instanceof Error?e.message:String(e)}
+const wait=(ms)=>new Promise(r=>setTimeout(r,ms));
+const sharedPath='/.wasmenv/share';
+function restoreText(){for(const id of ['command','script']){try{const text=localStorage.getItem('box64-'+id);if(text!==null)$(id).value=text}catch{}}}
+restoreText();for(const id of ['command','script'])$(id).addEventListener('input',()=>{try{localStorage.setItem('box64-'+id,$(id).value)}catch{}});
+function initTerm(){if(term)return; if(!window.Terminal)throw new Error('xterm.js library not available');term=new window.Terminal({cursorBlink:true,convertEol:true,fontFamily:'ui-monospace,Consolas,monospace',fontSize:13,lineHeight:1.25,theme:{background:'#000000',foreground:'#eeeeee',cursor:'#eeeeee',selectionBackground:'#66666688'},scrollback:7000,allowTransparency:false});term.open($('terminal'));const resize=()=>{try{const e=$('terminal');const cols=Math.max(40,Math.floor((e.clientWidth-28)/8.1));const rows=Math.max(12,Math.floor((e.clientHeight-28)/17));term.resize(cols,rows)}catch{}};new ResizeObserver(resize).observe($('terminal'));resize();term.onWriteParsed(()=>{if(!started)return;const b=term.buffer.active;let found='';for(let i=Math.max(0,b.cursorY+b.baseY-4);i<=b.cursorY+b.baseY;i++){found+=b.getLine(i)?.translateToString(true)+'\n'}if(/(?:^|\n)\S*login:\s*$/m.test(found))$('login').disabled=false;if(/(?:^|\n)[^\n]*[#$]\s*$/m.test(found)&&!loggedIn){loggedIn=true;$('package-state').textContent='Root shell detected; Node/npm check is available.';trace('Guest shell prompt detected (terminal buffer)')}});
+ $('terminal').addEventListener('contextmenu',async e=>{e.preventDefault();await paste()});$('terminal').addEventListener('paste',e=>{const s=e.clipboardData?.getData('text/plain');if(s){e.preventDefault();inject(s)}});
+}
+function inject(s){if(!started||!term)throw new Error('Boot Linux first');term.input(String(s).replace(/\r\n/g,'\n').replace(/\n/g,'\r'),true);term.focus()}
+function send(commands){const lines=String(commands).trim();if(!lines)return;inject(lines.replace(/\n/g,'\r')+'\r');trace('Sent '+lines.split('\n').length+' line(s) to guest terminal')}
+async function paste(){try{inject(await navigator.clipboard.readText());trace('Pasted clipboard text into terminal')}catch(e){trace('Clipboard access unavailable: use Ctrl+Shift+V while terminal is focused');term?.focus()}}
+async function copy(s){await navigator.clipboard.writeText(s);trace('Copied to clipboard')}
+function run(cmd){try{send(cmd)}catch(e){status('Not ready','error',errMessage(e))}}
+async function loadClassic(url){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=url;s.onload=resolve;s.onerror=()=>reject(new Error('Failed to load '+url));document.head.appendChild(s)})}
+async function checkAssets(){let ok=0;const failures=[];for(const path of FILES){try{const res=await fetch(new URL(path,BASE),{method:'HEAD',cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);ok++;}catch(e){failures.push(path+': '+errMessage(e))}}$('assets-status').textContent=failures.length?`${ok}/${FILES.length} assets available. Missing: ${failures.slice(0,4).join(', ')}`:`${ok}/${FILES.length} required assets found.`;$('assets-status').className='indicator '+(failures.length?'bad':'good');trace($('assets-status').textContent);return failures}
+async function boot(){if(booting||started)return;booting=true;buttons(true);$('overlay').hidden=false;progress(3);status('Checking host capabilities','idle');try{
+ if(!window.isSecureContext)throw Error('Use HTTPS or localhost: WebAssembly workers require a secure context');
+ if(!crossOriginIsolated){throw Error('This page is not cross-origin isolated yet. Enable the GitHub Pages workflow (coi-serviceworker.js), reload twice if necessary, then boot.');}
+ if(typeof SharedArrayBuffer==='undefined')throw Error('SharedArrayBuffer unavailable; COOP/COEP headers required.');
+ await import('https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js');
+ initTerm();
+ const failures=await checkAssets();if(failures.length)throw Error('Runtime assets missing. Run the included GitHub Pages workflow; first missing: '+failures[0]);try{const manifest=await (await fetch(new URL('manifest.json',BASE),{cache:'no-store'})).json();developerImage=manifest.node_preinstalled===true;trace(developerImage?'Custom Alpine image: Node/npm preinstalled.':'Upstream Alpine image: Node/npm not preinstalled.')}catch(e){trace('Image manifest unavailable: '+errMessage(e))}progress(12);
+ $('overlay').hidden=true;status('Loading QEMU disk and kernel','idle','Downloading emulated x86_64 runtime');
+ window.Module={preRun:[],arguments:['-nographic','-M','pc','-m','512M','-accel','tcg,tb-size=500','-L','/pack-rom/','-nic','none','-kernel','/pack-kernel/vmlinuz-virt','-initrd','/pack-initramfs/initramfs-virt','-append','console=ttyS0 root=/dev/vda noautodetect hostname=box','-drive','id=test,file=/pack-rootfs/disk-rootfs.img,format=raw,if=none','-device','virtio-blk-pci,drive=test','-virtfs','local,path=/.wasmenv,mount_tag=wasm0,security_model=passthrough,id=wasm0','-netdev','socket,id=vmnic,connect=localhost:8888','-device','virtio-net-pci,netdev=vmnic'],locateFile:path=>new URL(path,BASE).href,mainScriptUrlOrBlob:new URL('out.js',BASE).href,print:s=>trace(String(s)),printErr:s=>trace('QEMU: '+s),setStatus:s=>{$('detail').textContent=s;},monitorRunDependencies:left=>{if(left){$('detail').textContent='Loading data packages ('+left+' remaining)';progress(Math.min(75,25+Math.floor((15-left)*3)))}}};
+ for(const f of ['load-rootfs.js','load-kernel.js','load-initramfs.js','load-rom.js']){await loadClassic(new URL(f,BASE).href);progress(Math.min(45,12+['load-rootfs.js','load-kernel.js','load-initramfs.js','load-rom.js'].indexOf(f)*8))}
+ await loadClassic(new URL('dist/stack.js',BASE).href);progress(50);
+ await import('https://unpkg.com/xterm-pty/index.js');
+ if(typeof window.openpty!=='function')throw Error('xterm-pty did not initialize');
+ pty=window.openpty();term.loadAddon(pty.master);window.Module.pty=pty.slave;
+ const proxyURL='http://localhost:9999/';window.Module.websocket={url:proxyURL};
+ const workerURL=new URL('dist/stack-worker.js',BASE).href;
+ const stackWasmURL=new URL('c2w-net-proxy.wasm.gzip',BASE).href;
+ if(!window.Stack?.Start)throw Error('QEMU browser networking stack unavailable');
+ status('Starting browser network stack','idle');
+ window.Stack.Start(proxyURL,workerURL,stackWasmURL,async cert=>{
+ try{
+ networkReady=true;window.Module.preRun.push(mod=>{const fs=mod.FS;fs.mkdir('/.wasmenv');fs.mkdir(sharedPath);fs.writeFile('/.wasmenv/proxy.crt',cert);for(const obj of lastUpload){fs.writeFile(sharedPath+'/'+obj.name,obj.bytes)}});
+ progress(80);status('Starting QEMU x86_64','idle');
+ const init=(await import(new URL('out.js',BASE).href)).default;
+ wasmModule=await init(window.Module);started=true;progress(100);status('QEMU guest running','running','Alpine Linux · x86_64 · login: root');$('overlay').hidden=true;term.focus();
+ // Upstream QEMU Wasm's PTY requires this polling hook when there is no guest input.
+ const oldPoll=wasmModule.TTY?.stream_ops?.poll;
+ if(oldPoll){const slave=pty.slave;wasmModule.TTY.stream_ops.poll=function(stream,timeout){if(!slave.readable)return (slave.readable?1:0)|(slave.writable?4:0);return oldPoll.call(this,stream,timeout)}}
+ $('package-state').textContent=developerImage?'Developer image: Node.js and npm baked into guest disk. Login as root and verify versions.':'Upstream image: Node/npm may require installation. APK downloads are subject to CORS.';
+ }catch(e){failed(e)}
+ });
+ }catch(e){failed(e)}finally{booting=false}}
+function failed(e){progress(0);status('Boot failed','error',errMessage(e));$('overlay').hidden=false;$('overlay').innerHTML='<strong>QEMU runtime unavailable</strong><div class="hint" id="boot-error"></div><a target="_blank" rel="noopener" href="https://ktock.github.io/qemu-wasm-demo/alpine-x86_64.html">Try the upstream QEMU Wasm demo ↗</a>';$('boot-error').textContent=errMessage(e);buttons(false);booting=false;trace(errMessage(e))}
+function fileName(s){return String(s||'file').replace(/[^\w.\-]/g,'_').replace(/^\.+/,'').slice(0,100)||'file'}
+async function upload(files){if(!files?.length)return;const chosen=[];for(const f of files){if(f.size>20*1024*1024){trace('File skipped (>20MB): '+f.name);continue}const bytes=new Uint8Array(await f.arrayBuffer()),name=fileName(f.name);chosen.push({name,bytes});}lastUpload.push(...chosen);if(wasmModule?.FS){const fs=wasmModule.FS;for(const f of chosen){try{fs.writeFile(sharedPath+'/'+f.name,f.bytes)}catch(e){trace('Failed staging '+f.name+': '+errMessage(e))}}}const names=chosen.map(a=>a.name);$('file-status').textContent=`Staged ${names.length} file(s): ${names.join(', ')||'none'}. Linux: mount -t 9p -o trans=virtio,version=9p2000.L wasm0 /mnt/box`;trace($('file-status').textContent)}
+function stageScript(){const s=$('script').value;if(!s.trim())throw Error('Enter a script first');const obj={name:'box-script.sh',bytes:new TextEncoder().encode(s.replace(/\r\n/g,'\n'))};lastUpload=lastUpload.filter(x=>x.name!==obj.name);lastUpload.push(obj);if(wasmModule?.FS)wasmModule.FS.writeFile(sharedPath+'/'+obj.name,obj.bytes);$('file-status').textContent='Staged box-script.sh. Mount /mnt/box and run sh /mnt/box/box-script.sh';trace('Staged script '+obj.bytes.length+' bytes');return obj}
+function mount(){run('mkdir -p /mnt/box; mountpoint -q /mnt/box || mount -t 9p -o trans=virtio,version=9p2000.L wasm0 /mnt/box; ls -la /mnt/box/share 2>/dev/null || ls -la /mnt/box');mounted=true}
+$('boot').onclick=boot;$('reboot').onclick=()=>location.reload();$('paste').onclick=paste;$('full').onclick=()=>{const el=$('shell');if(document.fullscreenElement)document.exitFullscreen();else el.requestFullscreen()};$('login').onclick=()=>run('root');$('clear').onclick=()=>term?.clear();$('send').onclick=()=>run($('command').value);$('copy-command').onclick=()=>copy($('command').value).catch(e=>trace(errMessage(e)));
+$('verify').onclick=()=>run('uname -m; cat /etc/alpine-release; command -v node && node --version; command -v npm && npm --version');
+$('install').onclick=()=>run(PACKAGE_COMMAND+'; node -v; npm -v');$('devtools').onclick=()=>run("apk add --no-cache -X https://dl-cdn.alpinelinux.org/alpine/v3.21/main -X https://dl-cdn.alpinelinux.org/alpine/v3.21/community bash git curl ca-certificates sudo python3 make g++; node -v; npm -v");$('nettest').onclick=()=>run('ifconfig -a; ip route; cat /etc/resolv.conf; env | grep -i proxy; wget -S -O /dev/null https://registry.npmjs.org/ 2>&1 | tail -n 8');$('network').onclick=()=>run('uname -a; ifconfig -a; ip route; cat /etc/resolv.conf; env | grep -i proxy');$('mount').onclick=mount;$('listfiles').onclick=()=>run('ls -la /mnt/box/share 2>/dev/null || echo "Click Mount shared folder first"');$('choose-file').onclick=()=>$('file').click();$('file').onchange=e=>upload([...e.target.files]).catch(x=>trace(errMessage(x)));$('stage-script').onclick=()=>{try{stageScript()}catch(e){trace(errMessage(e))}};$('run-script').onclick=()=>{try{stageScript();run('mkdir -p /mnt/box; mountpoint -q /mnt/box || mount -t 9p -o trans=virtio,version=9p2000.L wasm0 /mnt/box; sh /mnt/box/share/box-script.sh')}catch(e){trace(errMessage(e))}};$('save-script').onclick=()=>{const file=new Blob([$('script').value],{type:'text/x-shellscript'}),url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download='box-script.sh';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};$('asset-test').onclick=checkAssets;$('copy-log').onclick=()=>copy(logs.join('\n'));$('reset-settings').onclick=()=>{if(confirm('Clear locally saved command and script text?')){for(const id of ['command','script']){localStorage.removeItem('box64-'+id);$(id).value=''}trace('Local text cleared')}};
+trace('BOX x86_64 interface loaded');if(!crossOriginIsolated){status('Cross-origin isolation required','idle','GitHub Pages workflow provisions a same-origin service worker')}
+// Same upstream constraints: experimental Fetch-proxy networking and volatile rootfs overlay.
 </script>
 </body>
 </html>
